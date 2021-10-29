@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="Bulk Reassignment - HTML">
+          
+    
+    <Body>
+    
+        &lt;html&gt;
+    &lt;body style="background:#FFF;margin:0;padding:0;text-align:left;"&gt;
+
+  &lt;table cellpadding="0" cellspacing="0" width="588" border="0" align="center" style="margin:0 auto;padding:0;"&gt;
+    &lt;tr valign="top"&gt;
+      &lt;td height="20"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+      &lt;!-- CHANGE IMAGE SRC TO CLIENT LOGO --&gt;
+      &lt;td align="right" width="295" height="79"&gt;&amp;nbsp;&lt;/td&gt;
+        &lt;!-- /CLIENT LOGO --&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+        &lt;td height="7"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+        &lt;td&gt;
+        &lt;!-- EMAILER CONTENT BEGINS --&gt;
+        
+        &lt;!-- HEADER --&gt;
+        &lt;!-- CHANGE BACKGROUND COLOR IN STYLE BELOW: blue - #0987a0 ; tan - #847f5c --&gt;
+        &lt;table cellpadding="0" cellspacing="0" width="588" style="background:#0987a0;margin:0;padding:0;text-align:left;border-bottom:5px solid #e4e4e4;"&gt;
+        &lt;tr valign="middle"&gt;
+          &lt;td width="30" height="85"&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+            &lt;td&gt;&lt;!-- CHANGE COLOR STYLE BELOW: blue - #98bec6 ; tan - #b5b192 --&gt;
+                &lt;h2 style="color:#98bec6;margin:0;padding:0;font:bold 11pt Arial;text-transform:uppercase;"&gt;New Access Review - Reassignment&lt;/h2&gt;
+                &lt;h1 style="color:#fff;margin:0;padding:0;font:bold 20pt Arial;"&gt;Reassignment from $requesterName&lt;/h1&gt;             
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/table&gt;
+        &lt;!-- /HEADER --&gt;
+        
+        &lt;!-- CONTENT --&gt;
+        &lt;table cellpadding="0" cellspacing="0" width="588" style="background:#fff;margin:0;padding:0;text-align:left;border-left:4px solid #ccc;border-right:4px solid #ccc;"&gt;
+        &lt;tr valign="top"&gt;
+          &lt;td colspan="3" height="30"&gt;&amp;nbsp;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr valign="top"&gt;
+          &lt;td width="30"&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+          &lt;td&gt;
+
+      &lt;table cellpadding="0" cellspacing="0" width="100%" border="0"&gt;
+            &lt;tr valign="top"&gt;
+            &lt;td&gt;
+            &lt;!-- Use owner.displayableName as of release 6.3 the owner is available to use in bulk reassignemnt templates --&gt;
+            &lt;p style="margin:20px 0 0;padding:0;color:#333;font:bold 10pt Arial;line-height:15pt;"&gt;$!{owner.displayableName},&lt;/p&gt;
+            &lt;br/&gt;
+
+            &lt;p style="margin:0 0 20px;padding:0;color:#333;font:normal 10pt Arial;line-height:15pt;"&gt;$!{requesterName} has assigned $!{numNewIdentities} users to you for access certification.&lt;/p&gt;
+            &lt;p style="margin:0;padding:0;color:#333;font:normal 10pt Arial;line-height:15pt;"&gt;A specific access review reassignment named &lt;b&gt;$!{certificationName}&lt;/b&gt; has been created for you, and is due on &lt;strong&gt;$spTools.formatDate( $certification.expiration,3,3)&lt;/strong&gt;.&lt;/p&gt;
+            
+            &lt;!-- CHANGE STYLE COLOR IN anchor or a TAG BELOW and in all anchor tags that apply below : red - #a22831 ; blue - #0987a0 --&gt;
+            &lt;p style="margin:20px 0;padding:0;color:#333;font:bold 10pt Arial;line-height:15pt;"&gt;&lt;a href="http://localhost:8080/identityiq/manage/certification/entityList.jsf?certificationId=$!{certification.id}"&gt;Click here to get started on this task.&lt;/a&gt;&lt;/p&gt;
+            &lt;p style="margin:0 0 20px;padding:0;color:#333;font:normal 10pt Arial;line-height:15pt;"&gt;
+            &lt;strong&gt;Description:&lt;/strong&gt;&lt;/br&gt;
+            $!{description}&lt;br/&gt;
+            &lt;br/&gt;
+            &lt;strong&gt;Comments from $!{requesterName}:&lt;/strong&gt;&lt;/br&gt;
+            $!{comments}&lt;/p&gt;
+            &lt;p style="margin:0;padding:0;color:#333;font:normal 10pt Arial;line-height:15pt;"&gt;Thank you for your cooperation,&lt;/p&gt;&lt;br /&gt;
+            &lt;p style="margin:0 0 20px;padding:0;color:#333;font:bold 10pt Arial;line-height:15pt;"&gt;The Security and Compliance Organization&lt;/p&gt;
+            &lt;/td&gt;
+            &lt;td width="220" align="right"&gt;
+            
+              &lt;table cellpadding="0" cellspacing="0" width="192" border="0" style="margin-bottom:30px"&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td style="background:#668641;border-bottom:2px solid #fff;"&gt;
+                  &lt;!-- CHANGE HEADER BACKGROUND COLOR ABOVE : green - #668641 ; red - #a22831 --&gt;
+                  &lt;p style="color:#fff;font:bold 11pt Arial;margin:10px 0 10px 15px;line-height:13pt;"&gt;Details&lt;/p&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td style="background:#e7e6e6;border-bottom:2px solid #fff;"&gt;
+                  &lt;p style="color:#000;font:normal 8pt Arial;margin:10px 0 10px 15px;line-height:13pt;"&gt;&lt;strong&gt;Due Date: &lt;/strong&gt;$spTools.formatDate($certification.expiration,3,3)&lt;/p&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td style="background:#e7e6e6;border-bottom:2px solid #fff;"&gt;
+                  &lt;p style="color:#000;font:normal 8pt Arial;margin:10px 0 0 15px;padding:0;line-height:13pt;"&gt;&lt;strong&gt;Reassigned By: &lt;/strong&gt;$!{requesterName}&lt;/p&gt;
+                    &lt;p style="color:#000;font:normal 8pt Arial;margin:0 0 0 15px;padding:0;line-height:13pt;"&gt;&lt;strong&gt;Reassigned Date: &lt;/strong&gt;$spTools.formatDate($certification.created,3,3)&lt;br/&gt;&lt;/p&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td style="background:#e7e6e6;border-bottom:2px solid #fff;"&gt;
+                  &lt;p style="color:#000;font:bold 8pt Arial;margin:10px 0 0 15px;padding:0;line-height:13pt;"&gt;Tags:&lt;/p&gt;
+                    &lt;p style="color:#000;font:normal 8pt Arial;margin:0 0 0 15px;padding:0;line-height:13pt;"&gt;
+#foreach( $tag in $certification.tags )
+$tag.name&lt;/br&gt;
+#end
+&lt;/p&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;/table&gt;
+            &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;/table&gt;
+            
+            &lt;/td&gt;
+            &lt;td width="10"&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr valign="top"&gt;
+          &lt;td colspan="3"&gt;
+            
+            &lt;table cellspacing="0" cellpadding="0" width="550" border="0"&gt;
+            &lt;tr valign="middle"&gt;
+            &lt;td&gt;
+            &lt;!-- HELP LINKS --&gt;
+            &lt;!-- REPLACE THESE LINKS TO POINT TO ENVIRONMENT SPECIFIC LOCATIONS --&gt;
+            &lt;p style="margin:0 0 0 30px;padding:0;color:#b0adad;font:normal 8pt Arial;line-height:12pt;margin-bottom:30px;"&gt;&lt;a href="#" style="color:#666666;text-decoration:none;font-weight:bold;"&gt;Help&lt;/a&gt; &amp;nbsp;|&amp;nbsp; &lt;a href="#" style="color:#666666;text-decoration:none;font-weight:bold;"&gt;FAQs&lt;/a&gt; &amp;nbsp;|&amp;nbsp; &lt;a href="#" style="color:#666666;text-decoration:none;font-weight:bold;"&gt;Support&lt;/a&gt;&lt;/p&gt;
+            &lt;/td&gt;
+            &lt;td width="145"&gt;
+            &lt;!-- START TASK BUTTON --&gt;
+            &lt;!-- CHANGE BACKGROUND COLOR BELOW : red - #9f2d32 ; green - #668641 --&gt;
+            &lt;!-- CHANGE BORDER COLOR BELOW : red - #b35b62 ; green - #78a347 --&gt;
+            &lt;div style="background:#668641;border:3px solid #78a347;width:145px;height:33px;float:right;margin-bottom:30px;"&gt;
+              &lt;a href="http://localhost:8080/identityiq/manage/certification/entityList.jsf?certificationId=$!{certification.id}" 
+                style="color:#fff; text-align:center;font:normal 14pt Arial;display:block;margin-top:3px;text-decoration:none;"&gt;
+                &lt;!--&lt;img src="http://www.sailpoint.com/mailers/task-alert/btn-start-task.png" border="0" width="145" height="33" alt="Start Task" /&gt;--&gt;
+                Start Task
+              &lt;/a&gt;
+            &lt;/div&gt;
+            &lt;!-- /BUTTON --&gt;
+            &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;/table&gt;            
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/table&gt;
+        &lt;!-- /CONTENT --&gt;
+        
+        &lt;!-- FOOTER --&gt;
+        &lt;!-- CHANGE BACKGROUND COLOR IN STYLE BELOW: blue - #0987a0 ; tan - #847f5c --&gt;
+        &lt;table cellpading="0" cellspacing="0" width="588" style="background:#0987a0;margin:0;padding:0;text-align:right;border-top:5px solid #e4e4e4;"&gt;
+        &lt;tr valign="middle"&gt;
+          &lt;td height="60"&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/table&gt;
+        &lt;!-- /FOOTER --&gt;
+        
+        &lt;!-- /EMAILER --&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+        
+    
+    </Body>
+          
+    
+    <Description>
+      Email Template for notifying a user when they have been reassigned identities
+      from an existing certification.
+      
+      Arguments
+      ---------
+      certificationName (String):   The name of the certification containing the items to reassign
+      certification (Certification):    The Certification object containing the items to reassign
+      owner (Identity):        The Identity object receiving the reassignment request
+      comments (String):        Comments from the reassigner
+      description (String):       Description of the reassignment
+      numNewIdentities (String):    Number of new identities
+      requesterName (String):       The display name of the Identity that requested the reassignment
+
+    </Description>
+          
+    
+    <Subject>New access review reassignment request: $certificationName</Subject>
+        
+
+</EmailTemplate>
