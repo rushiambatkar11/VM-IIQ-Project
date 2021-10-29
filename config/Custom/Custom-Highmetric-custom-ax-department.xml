@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="Highmetric-Custom-AX-Department">
+  <Attributes>
+    <Map>
+      <entry key="AWS Cloud">
+          <value>
+          <Map>
+            <entry key="adDepartment" value="IT Support"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Admin">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Administration"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Consult">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Consultants"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Executive">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Administration"/>
+            <entry key="adSubDepartment" value="Human Resources"/>
+          </Map>
+        </value>
+      </entry>
+       <entry key="Finance">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Administration"/>
+            <entry key="adSubDepartment" value="Accounting"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Front Line Support">
+         <value>
+          <Map>
+            <entry key="adDepartment" value="Managed Services"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+        </entry>
+      
+      <entry key="Human Resources">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Administration"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="IT Department">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="IT Support"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Innovation Labs / Hive">
+       <value>
+          <Map>
+            <entry key="adDepartment"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+        </entry>
+      <entry key="Legal">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Administration"/>
+            <entry key="adSubDepartment" value="Legal"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Managed Svcs">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Managed Services"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Marketing">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Marketing"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Overhead Delivery">
+       <value>
+          <Map>
+            <entry key="adDepartment" value="Consultants"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+        </entry>
+      <entry key="Presales">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Sales"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Product Development">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Product Development"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Project Management">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Project Management"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Sales">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Sales"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Sales - Inside">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Sales"/>
+            <entry key="adSubDepartment"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="Software as a Service">
+        <value>
+          <Map>
+            <entry key="adDepartment" value="Managed Services"/>
+            <entry key="adSubDepartment" value="SaaS Operations"/>
+          </Map>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</Custom>

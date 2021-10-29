@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity" monitored="true" name="Highmetric-Workflow-Identity-Deletion" type="IdentityUpdate">
+  <Variable input="true" name="identityName"/>
+  <Variable input="true" name="flow"/>
+  <Variable name="plan"/>
+  <Variable name="identityRequestId" output="true"/>
+  <Variable name="project" output="true"/>
+  <Variable input="true" name="difference"/>
+  <Variable name="project"/>
+  <Variable input="true" name="type"/>
+  <Variable input="true" name="authApp"/>
+  <Variable initializer="true" name="transient"/>
+  <Variable name="retainAccount"/>
+  <Variable name="deleteIdentity"/>
+  <Variable initializer="Active Directory" input="true" name="adApplication"/>
+  <Variable initializer="true" input="true" name="foregroundProvisioning"/>
+  <Variable initializer="Highmetric-Form-Identity-Deletion-Approval" input="true" name="identityDeleteForm"/>
+  <Variable initializer="Highmetric-Form-Identity-Deletion-Approval" input="true" name="duplicateCheckFormDescription"/>
+  <Variable initializer="Highmetric-EmailTemplate-Identity-Deletion-Approval" input="true" name="identityDeleteApprovalTemplete"/>
+  <Description>Workflow used to delete the identities from Sailpoint and Active Directory after 90 days with approval of IT Administrator workgroup.</Description>
+  <Step icon="Start" name="Start" posX="22" posY="29">
+    <Transition to="Identity Deletion Approval"/>
+  </Step>
+  <Step icon="Approval" name="Identity Deletion Approval" posX="141" posY="34">
+    <Approval name="Identity Deletion Approval" owner="IT Administrator" return="retainAccount,deleteIdentity" send="identityName">
+      <Arg name="workItemDescription" value="ref:duplicateCheckFormDescription"/>
+      <Arg name="workItemForm" value="ref:identityDeleteForm"/>
+      <Arg name="launcher" value="string:SailPoint IIQ"/>
+      <Arg name="workItemNotificationTemplate" value="ref:identityDeleteApprovalTemplete"/>
+      <Arg name="identityName" value="ref:identityName"/>
+      <Arg name="identity" value="script: return context.getObjectByName(Identity.class, identityName);"/>
+    </Approval>
+    <Transition to="Proceed Retain Account"/>
+  </Step>
+  <Step icon="Default" name="Proceed Retain Account" posX="338" posY="38">
+    <Script>
+      <Source><![CDATA[
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+        import sailpoint.object.Identity;
+        import java.util.Date;
+        import java.text.DateFormat;
+        import java.text.SimpleDateFormat;
+
+        Logger logger = Logger.getLogger("Proceed Retain Account");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("identityName==>"+identityName);
+        logger.debug("Proceed Retain Account"+retainAccount);
+
+
+        Identity identity = context.getObjectByName(Identity.class,identityName);
+
+        if(null !=retainAccount)
+        {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+        String retainDate = formatter.format(retainAccount);
+        identity.setAttribute("retainAccount",retainDate);
+        }
+
+
+      ]]></Source>
+    </Script>
+    <Transition to="Create plan">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          Logger logger = Logger.getLogger("Proceed Retain Account");
+          logger.setLevel(Level.DEBUG);
+
+
+          if(null != deleteIdentity && sailpoint.tools.Util.isNotNullOrEmpty(deleteIdentity))
+          {
+          if(deleteIdentity.equalsIgnoreCase("Approve"))
+          {
+          logger.debug("Its is seleted as approved");
+          return true;
+          }
+          else
+          {
+          logger.debug(" Its is seleted as Denyed");
+          return false;
+          }
+          }]]></Source>
+      </Script>
+    </Transition>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Provision" name="Create plan" posX="409" posY="298" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[ 
+        import sailpoint.object.Link;
+        import sailpoint.object.Identity;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import sailpoint.object.ProvisioningPlan.AttributeRequest;
+        import java.util.List;
+        import sailpoint.object.Application;
+        import sailpoint.object.Identity;
+        import sailpoint.object.Application;
+        import sailpoint.api.IdentityService;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level; 
+
+        Logger logger = Logger.getLogger("Identity-Deletion Create plan");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("difference ************* "+difference);
+        logger.debug("Identity name==>"+identityName);
+        logger.debug("flow==>"+flow);
+        logger.debug("type==>"+type);
+        logger.debug("Authoritive apllication name"+authApp);
+        logger.debug("Target apllication name"+adApplication);
+
+        Identity identity = context.getObjectByName(Identity.class,identityName); 
+
+        ProvisioningPlan plan = new ProvisioningPlan(); 
+
+        plan.setIdentity(identity);
+        plan.setNativeIdentity(identity.getName());
+
+        IdentityService idnService = new IdentityService(context);
+        Application adApp = context.getObjectByName(Application.class, adApplication);
+
+        List adLink = idnService.getLinks(identity, adApp);
+
+        logger.debug("adLink adLink==>"+adLink);
+
+        for(Link link :adLink)
+        {
+        if(link.getApplicationName().equalsIgnoreCase(adApplication))
+        {
+
+        ProvisioningPlan.AccountRequest  adreq = new ProvisioningPlan.AccountRequest();
+        adreq.setNativeIdentity(link.getNativeIdentity());
+        adreq.setApplication(link.getApplicationName());
+        adreq.setOperation(ProvisioningPlan.AccountRequest.Operation.Delete);
+        //add account request into the plan
+        plan.add(adreq);
+        }
+        }
+
+        Application JdbcApp = context.getObjectByName(Application.class, authApp);
+        List authLink = idnService.getLinks(identity, JdbcApp);
+
+        logger.debug("authLink==>"+authLink);
+
+        for(Link link :authLink)
+        {
+        if(link.getApplicationName().equalsIgnoreCase(authApp))
+        {
+        ProvisioningPlan.AccountRequest  authAccReq = new ProvisioningPlan.AccountRequest();
+        authAccReq.setNativeIdentity(link.getNativeIdentity());
+        authAccReq.setApplication(link.getApplicationName());
+        authAccReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+
+
+        //set isterminated attribute value "YES" to the account request
+        authAccReq.add(new AttributeRequest("is_terminated", ProvisioningPlan.Operation.Set,"YES"));
+
+        //add account request into the plan
+        plan.add(authAccReq);
+        }
+        }
+
+        if(plan!=null)
+        {
+        logger.debug("plan contins in the application"+plan.toXml());
+        }
+        return plan;
+      ]]></Source>
+    </Script>
+    <Transition to="Call LCM Provisioning" when="plan != null &amp;&amp; !plan.isEmpty()"/>
+    <Transition to="Stop" when="plan == null &amp;&amp; plan.isEmpty()"/>
+  </Step>
+  <Step icon="Default" name="Call LCM Provisioning" posX="758" posY="9">
+    <Arg name="identityEmailTemplate"/>
+    <Arg name="enableRetryRequest"/>
+    <Arg name="securityOfficerElectronicSignature"/>
+    <Arg name="fallbackApprover"/>
+    <Arg name="endOnManualWorkItems"/>
+    <Arg name="userEmailTemplate"/>
+    <Arg name="policiesToCheck"/>
+    <Arg name="workItemComments"/>
+    <Arg name="project"/>
+    <Arg name="approvalSplitPoint"/>
+    <Arg name="identityRequestId" value="ref:identityRequestId"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="identityDisplayName"/>
+    <Arg name="foregroundProvisioning" value="ref:foregroundProvisioning"/>
+    <Arg name="ownerElectronicSignature"/>
+    <Arg name="batchRequestItemId"/>
+    <Arg name="saveUnmanagedPlan_WithProjectArgument"/>
+    <Arg name="splitPlans"/>
+    <Arg name="doRefresh" value="false"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Arg name="identityElectronicSignature"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="approvalSet"/>
+    <Arg name="violationReviewDecision"/>
+    <Arg name="filterRejects"/>
+    <Arg name="splitProjects"/>
+    <Arg name="requesterEmailTemplate"/>
+    <Arg name="approvalEmailTemplate"/>
+    <Arg name="ticketManagementApplication"/>
+    <Arg name="securityOfficerName"/>
+    <Arg name="approvingIdentities"/>
+    <Arg name="managerEmailTemplate"/>
+    <Arg name="ticketId"/>
+    <Arg name="approvalScheme" value="none"/>
+    <Arg name="allowRequestsWithViolations"/>
+    <Arg name="workItemPriority"/>
+    <Arg name="managerElectronicSignature"/>
+    <Arg name="requireViolationReviewComments"/>
+    <Arg name="splitApprovalSet"/>
+    <Arg name="approvalMode"/>
+    <Arg name="trace" value="ref:trace"/>
+    <Arg name="endOnProvisioningForms"/>
+    <Arg name="splitWorkItemComments"/>
+    <Arg name="notificationScheme" value="none"/>
+    <Arg name="policyViolations"/>
+    <Arg name="policyScheme" value="none"/>
+    <Arg name="setPreviousApprovalDecisions"/>
+    <Arg name="optimisticProvisioning"/>
+    <Arg name="securityOfficerEmailTemplate"/>
+    <Description>Call the standard subprocess to initialize the request, this includes
+      auditing, building the approvalset, compiling the plan into 
+      project and checking policy violations.</Description>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Return name="project" to="project"/>
+    <WorkflowRef>
+      <Reference class="sailpoint.object.Workflow" name="LCM Provisioning"/>
+    </WorkflowRef>
+    <Transition to="Notify IT"/>
+  </Step>
+  <Step action="call:sendEmail" icon="Email" name="Notify IT" posX="1081">
+    <Arg name="template" value="Highmetric-EmailTemplate-Identity-Deletion"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="identity" value="script: return context.getObjectByName(Identity.class, identityName);"/>
+    <Arg name="to">
+      <Script>
+        <Source><![CDATA[
+          import java.util.ArrayList;
+          import java.util.HashSet;
+          import java.util.List;
+          import sailpoint.api.ObjectUtil;
+          import sailpoint.object.Identity;
+          import sailpoint.tools.Util;
+
+          HashSet emails = new HashSet();
+          Identity identity = context.getObjectByName(Identity.class, identityName);
+          Identity adminWrkgp = context.getObjectByName(Identity.class, "IT Administrator");
+          if(null!=adminWrkgp)
+          {
+          List addresses = ObjectUtil.getEffectiveEmails(context, adminWrkgp);
+          if (!Util.isEmpty(addresses)) {
+          emails.addAll(addresses);
+          }           
+          }      
+          return Util.listToCsv(new ArrayList(emails));      
+        ]]></Source>
+      </Script>
+    </Arg>
+    <Arg name="launcher" value="string:SailPoint IIQ"/>
+    <Transition to="Audit"/>
+  </Step>
+  <Step icon="Audit" name="Audit" posX="1133" posY="174">
+    <Script>
+      <Source><![CDATA[
+        import sailpoint.server.Auditor;
+        import sailpoint.object.AuditEvent;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import sailpoint.object.ProvisioningPlan.AttributeRequest;
+        import sailpoint.object.ProvisioningPlan.AccountRequest.Operation;
+        import sailpoint.object.ProvisioningResult;
+        import sailpoint.object.ProvisioningProject;
+        import sailpoint.object.EmailOptions;
+        import sailpoint.object.EmailTemplate;
+        import sailpoint.object.Identity;
+        import sailpoint.object.IdentityRequest;
+        import sailpoint.object.Attributes;
+        import java.util.List;
+        import sailpoint.tools.GeneralException;
+        import sailpoint.tools.Message;
+        import sailpoint.tools.Util;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+        Logger logger = Logger.getLogger("Highmetric-Rule-Delete");
+        logger.setLevel(Level.DEBUG);
+
+        List plans=null;
+        ProvisioningPlan currentPlan=null;
+        String Targetapp="";
+        String action="";
+        List planerrorMessages = new ArrayList();
+        List apperrorMessages = new ArrayList();
+
+        logger.debug("Identity name contains==>" + identityName);
+
+        Identity identity = context.getObjectByName(Identity.class, identityName);
+
+
+        String auditSource = "Workflow: " + wfcontext.getWorkflow().getName();
+        logger.debug("IdentityRequest===>" + identityRequestId);
+        IdentityRequest identityRequest = context.getObjectByName(IdentityRequest.class, identityRequestId);
+        if (identityRequest == null) {
+        logger.debug("IdentityRequest contains a null value");
+        return;
+        }
+        logger.debug("Project contains==>" + project);
+        if (null == identityRequest.getProvisionedProject() && null != project) {
+        plans = project.getIntegrationPlans();
+        } else {
+        plans = identityRequest.getProvisionedProject().getIntegrationPlans();
+        }
+        if (plans != null) {
+        logger.debug("Inside plan");
+        for (int i = 0; i < plans.size(); i++) {
+        ProvisioningPlan plan1 = (ProvisioningPlan) plans.get(i);
+        List <
+        AccountRequest > accReqs = plan1.getAccountRequests();
+        String Instance = "";
+        String NativeIdentity = "";
+        String SEPARATOR = ",";
+        String Operror = "";
+        String Oaerror = "";
+        Attributes attrs = new Attributes();
+        List attributeRequests;
+        if (accReqs != null) {
+        for (AccountRequest accReq: accReqs) {
+        Instance = accReq.getInstance();
+        NativeIdentity = accReq.getNativeIdentity();
+        if (null != accReq.getAttributeRequests()) {
+        attributeRequests = accReq.getAttributeRequests();
+        if (!attributeRequests.isEmpty()) {
+        for (AttributeRequest attributeRequest: attributeRequests) {
+        attrs.put(attributeRequest.getName(), attributeRequest.getValue());
+        }
+        }
+        }
+        }
+        }
+        if (plan1.getResult() != null) {
+        logger.debug("Inside plan result");
+        ProvisioningResult result = plan1.getResult();
+        Targetapp = plan1.getTargetIntegration();
+        List planMessages = plan1.getResult().getErrors();
+        if (planMessages != null) {
+        logger.debug("Provisioning plan contains Error");
+        List planWarningMessages = plan1.getResult().getWarnings();
+        if (planWarningMessages != null) {
+        planMessages.addAll(planWarningMessages);
+        }
+        for (int k = 0; k < planMessages.size(); k++) {
+        Message message = (Message) planMessages.get(k);
+        planerrorMessages.add(message.getType().toString() + " message " + message.getMessage());
+        StringBuilder pBuilder = new StringBuilder();
+        for (String perror: planerrorMessages) {
+        pBuilder.append(perror);
+        pBuilder.append(SEPARATOR);
+        }
+        Operror = pBuilder.toString();
+        }
+        }
+        if (null != plan1.getResult()) {
+        logger.debug("result of the plan==>" + result.getStatus());
+        if (result.getStatus().equals(ProvisioningResult.STATUS_COMMITTED)) {
+        logger.debug("result of the plan STATUS_COMMITTED");
+        action = "STATUS_COMMITTED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Delete Account Provision has committed");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_QUEUED)) {
+        logger.debug("result of the plan STATUS_QUEUED");
+        action = "STATUS_QUEUED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Delete Account has queued");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_FAILED)) {
+        logger.debug("result of the plan STATUS_FAILED");
+        action = "STATUS_FAILED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4(Operror);
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        }
+        }
+        else {
+        logger.debug("result contains in the Account request");
+        List requests = plan1.getAccountRequests();
+        AccountRequest request;
+        if (requests != null) {
+        logger.debug("Plan contains AccountRequests" + requests.size());
+        for (int j = 0; j < requests.size(); j++) {
+        request = (AccountRequest) requests.get(j);
+        Targetapp = request.getApplicationName();
+        ProvisioningResult result = request.getResult();
+        if (result != null) {
+        logger.debug("ProvisioningResult in a AccountRequests");
+        List messages = result.getErrors();
+        List warnings = result.getWarnings();
+        if (messages != null) {
+        if (warnings != null) {
+        messages.addAll(warnings);
+        }
+        for (int k = 0; k < messages.size(); k++) {
+        Message message = (Message) messages.get(k);
+        apperrorMessages.add(message.getType().toString() + " message " + message.getMessage());
+        StringBuilder aBuilder = new StringBuilder();
+        for (String aerror: apperrorMessages) {
+        aBuilder.append(aerror);
+        aBuilder.append(SEPARATOR);
+        }
+        Oaerror = aBuilder.toString();
+        }
+        }
+        }
+        if (null != request.getResult()) {
+        logger.debug("Account Request result contains===>" + result.getStatus());
+        if (result.getStatus().equals(ProvisioningResult.STATUS_COMMITTED)) {
+        logger.debug("Account Request result STATUS_COMMITTED");
+        action = "STATUS_COMMITTED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Delete Account has committed");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        logger.debug("Auditor is comitted");
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_QUEUED)) {
+        logger.debug("Account Request result STATUS_QUEUED");
+        action = "STATUS_QUEUED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Delete Account has queued");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_FAILED)) {
+        logger.debug("Account Request result STATUS_FAILED");
+        action = "STATUS_FAILED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4(Oaerror);
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+      ]]></Source>
+    </Script>
+    <Transition to="Delete Sailpoint Account"/>
+  </Step>
+  <Step icon="Default" name="Delete Sailpoint Account" posX="1138" posY="131">
+    <Script>
+      <Source><![CDATA[
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+        import sailpoint.api.Terminator;
+        import sailpoint.object.Identity;
+
+        Logger logger = Logger.getLogger("Identity-Deletion Delete Sailpoint Account");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("identityName==>"+identityName);
+
+        Identity identity = context.getObjectByName(Identity.class,identityName); 
+        logger.debug("identity--> "+identity);
+
+        Terminator terminator=new Terminator(context);
+        terminator.deleteObject(identity);
+      ]]></Source>
+    </Script>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="804" posY="366"/>
+</Workflow>

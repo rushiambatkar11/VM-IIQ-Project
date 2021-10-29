@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Identity PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Identity name="IT Administrator" workgroup="true">
+  <Attributes>
+    <Map>
+      <entry key="displayName" value="IT Administrator"/>
+      <entry key="email" value="itnotifications@columnit.com"/>
+    </Map>
+  </Attributes>
+  <Capabilities>
+    <Reference class="sailpoint.object.Capability" name="AccessManager"/>
+    <Reference class="sailpoint.object.Capability" name="BusinessRoleAdministrator"/>
+    <Reference class="sailpoint.object.Capability" name="CertificationAdministrator"/>
+    <Reference class="sailpoint.object.Capability" name="ComplianceOfficer"/>
+    <Reference class="sailpoint.object.Capability" name="ManagedAttributeProvisioningAdmin"/>
+    <Reference class="sailpoint.object.Capability" name="IdentityAdministrator"/>
+    <Reference class="sailpoint.object.Capability" name="IdentityRequestAdministrator"/>
+    <Reference class="sailpoint.object.Capability" name="ITRoleAdministrator"/>
+  </Capabilities>
+  <Description>Highmetric IT Administrators</Description>
+  <Owner>
+    <Reference class="sailpoint.object.Identity" name="spadmin"/>
+  </Owner>
+  <Preferences>
+    <Map>
+      <entry key="workgroupNotificationOption">
+        <value>
+          <WorkgroupNotifationOption>Both</WorkgroupNotifationOption>
+        </value>
+      </entry>
+    </Map>
+  </Preferences>
+</Identity>

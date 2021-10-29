@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-Get-Members-workgroup">
+  <Source><![CDATA[
+          import java.util.ArrayList;
+          import java.util.HashSet;
+          import java.util.List;
+          import sailpoint.api.ObjectUtil;
+          import sailpoint.object.Identity;
+          import sailpoint.tools.Util;
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+                  Logger logger = Logger.getLogger("Identity Deletion Approval");
+                  logger.setLevel(Level.ALL);
+
+          HashSet emails = new HashSet();
+          ArrayList al = new ArrayList();
+          al.add("name");
+          al.add("id");
+          Identity adminWrkgp = context.getObjectByName(Identity.class, "IT Administrator");
+          if(null!=adminWrkgp)
+          {
+
+           Iterator itr= ObjectUtil.getWorkgroupMembers(context,adminWrkgp,al); 
+           
+           
+           if(itr.hasNext())
+           {
+           Object obj1 = itr.next();
+           
+           return "test==>"+itr.next();
+           }
+          }        
+ 
+ 
+  ]]></Source>
+</Rule>

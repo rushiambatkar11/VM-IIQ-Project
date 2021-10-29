@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" name="Highmetric-Workflow-Contractor-Onboarding" type="IdentityUpdate">
+  <Variable input="true" name="launcher"/>
+  <Variable initializer="string:Contractor Onboarding" input="true" name="flow"/>
+  <Variable input="true" name="quickLinkIdentityId"/>
+  <Variable initializer="string:contractor-onboarding" name="flow"/>
+  <Variable input="true" name="httpSession" transient="true"/>
+  <Variable input="true" name="plan"/>
+  <Variable input="true" name="identityName"/>
+  <Variable initializer="true" name="transient"/>
+  <Variable name="identityRequestId" output="true"/>
+  <Variable name="project" output="true"/>
+  <Variable initializer="true" input="true" name="foregroundProvisioning"/>
+  <Variable name="launcherName">
+    <Script>
+      <Source><![CDATA[      
+        return context.getObjectById(Identity.class,quickLinkIdentityId).getName();
+      ]]></Source>
+    </Script>
+  </Variable>
+  <Variable initializer="Highmetric-Form-Contractor-Onboarding" input="true" name="contractorOnboardingForm"/>
+  <Variable initializer="Highmetric-Form-Duplicate-User" input="true" name="duplicateCheckForm"/>
+  <Variable initializer="Highmetric-Form-Contractor-Onboarding" input="true" name="contractorOnboardingFormDescription"/>
+  <Variable initializer="Contractor HR" input="true" name="hrmsApp"/>
+  <Variable input="true" name="httpSession" transient="true"/>
+  <Variable name="modelMap"/>
+  <Variable name="userType"/>
+  <Variable name="typeOfHire"/>
+  <Variable name="dupIdentities"/>
+  <Variable name="entity"/>
+  <Variable name="vendorCompanyName"/>
+  <Variable name="createdDate"/>
+  <Variable name="createdBy"/>
+  <Variable name="salutation"/>
+  <Variable name="username"/>
+  <Variable name="firstname"/>
+  <Variable name="lastname"/>
+  <Variable name="middleName"/>
+  <Variable name="vendorEmail"/>
+  <Variable name="reportToManager"/>
+  <Variable name="projectmanager"/>
+  <Variable name="accountManager"/>
+  <Variable name="axDepartment"/>
+  <Variable name="jobTitle"/>
+  <Variable name="otherJobTitle"/>
+  <Variable name="domain"/>
+  <Variable name="contractStartDate"/>
+  <Variable name="contractEndDate"/>
+  <Variable name="backgroundCheckOrDrugScreen"/>
+  <Variable name="deviceType"/>
+  <Variable name="country"/>
+  <Variable name="residentialState"/>
+  <Variable name="remoteFromState"/>
+  <Variable name="remoteToCountry"/>
+  <Variable name="remoteToState "/>
+  <Variable name="remote"/>
+  <Variable name="office"/>
+  <Variable name="address"/>
+  <Variable name="entityEmail "/>
+  <Variable name="primaryphone"/>
+  <Variable name="accountingRegion"/>
+  <Variable name="practiceLineAccounting"/>
+  <Variable name="contractorEmail"/>
+  <Variable name="comments"/>
+  <Variable name="projectManager"/>
+  <Variable name="projectNumber"/>
+  <Variable name="backButton"/>
+  <Variable initializer="true" input="true" name="trace"/>
+  <RuleLibraries>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-Common-Rule-Library"/>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-JDBC-Rule-Library"/>
+  </RuleLibraries>
+  <Step icon="Start" name="Start" posX="226" posY="126">
+    <Approval name="Create identity" owner="ref:launcher" return="userType,typeOfHire,contractorEmail,entity,username, firstname, lastname, middleName,reportToManager, projectmanager, accountManager,axDepartment,jobTitle,otherJobTitle,vendorCompanyName,remote,contractStartDate, contractEndDate, backgroundCheckOrDrugScreen, deviceType,country,domain, residentialState, office, address,entityEmail,primaryphone, vendorEmail, accountingRegion, practiceLineAccounting, comments, remoteFromState,remoteToCountry,remoteToState,createdDate,createdBy,salutation, projectNumber" send="launcherName,userType,typeOfHire,contractorEmail,entity,username, firstname, lastname, middleName,reportToManager,projectmanager,accountManager,vendorCompanyName,remote,jobtitle,contractStartDate,contractEndDate,backgroundCheckOrDrugScreen,deviceType,country,domain,residentialState,office,address,entityEmail,primaryphone,vendorEmail,accountingRegion,practiceLineAccounting,comments,remoteFromState,remoteToCountry,remoteToState,createdDate,createdBy,salutation,projectNumber">
+      <Arg name="workItemDescription" value="ref:contractorOnboardingFormDescription"/>
+      <Arg name="workItemForm" value="ref:contractorOnboardingForm"/>
+      <Arg name="createdBy" value="ref:launcher"/>
+    </Approval>
+    <Transition to="Build Custom Model"/>
+  </Step>
+  <Step icon="Default" name="Build Custom Model" posX="296" posY="126" resultVariable="modelMap">
+    <Script>
+      <Source><![CDATA[
+        import java.util.Map;
+        import java.util.HashMap;
+        import sailpoint.object.Identity;
+        import sailpoint.object.Custom;
+        import java.util.Calendar;
+        import java.util.Date;
+        import java.util.GregorianCalendar;
+        import java.util.ArrayList;
+        import java.util.List;
+        import java.util.Arrays;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+
+        Logger logger = Logger.getLogger("testing for contractor onboarding!!");
+        logger.setLevel(Level.DEBUG);
+
+
+        logger.debug("vendorCompanyName contains ===>"+vendorCompanyName);
+        logger.debug("vendorCompanyEmail contains ===>"+vendorEmail);
+        logger.debug("entityEmail ===>"+entityEmail);
+        logger.debug("domain===>"+domain);
+
+        logger.debug("residentialState===>"+residentialState);
+
+        HashMap modelMap = new HashMap();
+        
+        // Evalute AD Depatrment and Sub Depatment based on AX Department
+        if (null != axDepartment){
+        modelMap.put("ax_department", axDepartment);
+        }
+                
+        if (null != entity)
+        {
+        modelMap.put("entity", entity);
+        }
+
+        if (null != country)
+        {
+        modelMap.put("country", country);
+        }
+
+        if (null != contractorEmail)
+        {
+        modelMap.put("contractor_email", contractorEmail);
+        }
+
+        if(null != username)
+        {
+        modelMap.put("username",username);
+        }
+        if(null != firstname)
+        {
+        modelMap.put("firstname",firstname);
+        }
+
+        if(null != lastname)
+        {
+        modelMap.put("lastname", lastname);
+        }
+
+        if(null != middleName)
+        {
+        modelMap.put("middleName", middleName);
+        }
+
+        if(null != reportToManager)
+        {
+        Identity mgrId=(Identity)context.getObject(Identity.class, reportToManager);
+        if(mgrId!=null)
+        {
+        modelMap.put("report_to_manager",mgrId.getName());
+        }
+        }
+
+        if(null != projectmanager)
+        {
+        Identity prjmgrId=(Identity)context.getObject(Identity.class, projectmanager);
+        if(prjmgrId!=null)
+        {
+        modelMap.put("project_manager",prjmgrId.getName());
+        }
+        }
+
+        if(null != accountManager)
+        {
+        Identity accmgrId=(Identity)context.getObject(Identity.class, accountManager);
+        if(accmgrId!=null)
+        {
+        modelMap.put("account_manager",accmgrId.getName());
+        }
+        }
+                
+        if (null != jobTitle)
+        {             
+        if(null!=otherJobTitle)
+        {
+        modelMap.put("jobtitle", otherJobTitle); 
+        }
+        else
+        {
+        modelMap.put("jobtitle", jobTitle); 
+        }
+        }
+
+        if(null != vendorEmail)
+        {
+        modelMap.put("vendor_email", vendorEmail);
+        }
+
+        if(null != contractStartDate)
+        {
+        modelMap.put("contract_start_date", contractStartDate);
+        }
+
+        if(null != contractEndDate)
+        {
+        modelMap.put("contract_end_date", contractEndDate);
+        }
+
+        if(null != backgroundCheckOrDrugScreen)
+        {
+        modelMap.put("background_check_or_drug_screen", backgroundCheckOrDrugScreen);
+        }
+
+        if(null != deviceType)
+        {
+        modelMap.put("device_type", deviceType);
+        }
+
+        if (null != residentialState)
+        {
+        modelMap.put("residential_state", residentialState);
+        }
+
+        if (null != remoteFromState)
+        {
+        modelMap.put("remote_from_state", remoteFromState);
+        }
+
+        if (null != remoteToCountry)
+        {
+        modelMap.put("remote_to_country", remoteToCountry);
+        }
+
+        if (null != remoteToState)
+        {
+        modelMap.put("remote_to_state", remoteToState);
+        }
+
+        if (null != remote)
+        modelMap.put("remote", remote);
+
+        if (null != office)
+        {
+        modelMap.put("office_location", office);
+        }
+
+        if (null != address)
+        {
+        modelMap.put("address", address);
+        }
+
+        if (null != entityEmail)
+        {
+        modelMap.put("entity_email", entityEmail);
+        }
+        if (null != primaryphone)
+        {
+        modelMap.put("primary_phone", primaryphone);
+        }
+
+        if (null != accountingRegion)
+        {
+        modelMap.put("accounting_region", accountingRegion);
+        }
+
+        if (null != practiceLineAccounting)
+        {
+        modelMap.put("practice_line", practiceLineAccounting);
+        }
+
+        if (null != comments)
+        {
+        modelMap.put("comments", comments);
+        }
+
+
+        if(null != salutation)
+        {
+        modelMap.put("salutation", salutation);
+        }
+
+        if (null != launcherName)
+        {
+        modelMap.put("created_by", launcherName);
+        }
+
+
+        Calendar cal = new GregorianCalendar();
+        Date createdDate = cal.getTime();
+        if (null != createdDate)
+        modelMap.put("created_date", createdDate);
+
+        if (null != userType)
+        {
+        modelMap.put("user_type", userType);
+        modelMap.put("status", "active");
+        }
+
+        if(null != typeOfHire)
+        {
+        modelMap.put("type_of_hire", typeOfHire);
+        }
+
+        if (null != vendorCompanyName)
+        {
+        modelMap.put("vendor_company_name", vendorCompanyName);
+        }
+
+        if(null != projectNumber)
+        {
+        modelMap.put("project_number",projectNumber);
+        }
+
+        logger.debug("Model Map Contains==>"+modelMap);
+
+        return modelMap;
+
+      ]]></Source>
+    </Script>
+    <Transition to="Duplicate Check"/>
+  </Step>
+  <Step icon="Default" name="Duplicate Check" posX="588" posY="126" resultVariable="dupIdentities">
+    <Script>
+      <Source><![CDATA[
+        import sailpoint.object.Identity; 
+        import sailpoint.object.QueryOptions;
+        import sailpoint.object.Filter;
+        import java.util.List;
+        import java.util.ArrayList;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+        Logger logger = Logger.getLogger("Rule-Check-Duplicate");
+        logger.setLevel(Level.DEBUG);
+
+
+        QueryOptions qo = new QueryOptions();
+        List dupIdentities = new ArrayList();
+
+
+        if(modelMap.get("firstname")!=null && modelMap.get("lastname")!=null)
+        {
+
+        qo.addFilter(Filter.eq("firstname",modelMap.get("firstname")));
+        qo.addFilter(Filter.eq("lastname", modelMap.get("lastname")));
+
+
+
+        List listDupIdentities = context.getObjects(Identity.class,qo);
+
+
+        if (null != listDupIdentities) {
+
+        for (Identity idn : listDupIdentities) {
+
+        logger.debug("Identity"+ idn.getName());
+        dupIdentities.add(idn.getName());
+        context.decache();
+        }
+        }
+
+        logger.debug("dupIdentities===>"+ dupIdentities);
+        return dupIdentities;
+        }
+      ]]></Source>
+    </Script>
+    <Transition to="Create Plan">
+      <Script>
+        <Source><![CDATA[
+
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+        Logger logger = Logger.getLogger("Rule-Check-Duplicate");
+        logger.setLevel(Level.DEBUG);
+        
+        logger.debug("Stop dupIdentities===>"+dupIdentities);
+        
+        Object obj = dupIdentities;
+     	
+		if(obj !=null && obj instanceof List)
+		{
+			logger.debug("True");
+			ArrayList al =(ArrayList) obj;
+			
+			if(al.size()==0)
+			{
+			
+			logger.debug("Array Size is 0");
+			return true;
+			}
+			
+		 }
+		return false;
+       
+      ]]></Source>
+      </Script>
+    </Transition>
+    <Transition to="Duplicate Identity Form"/>
+  </Step>
+  <Step icon="Default" name="Duplicate Identity Form" posX="588" posY="126">
+    <Approval name="Create identity" owner="ref:launcher" return="backButton" send="launcherName">
+      <Arg name="workItemDescription" value="ref:duplicateCheckForm"/>
+      <Arg name="workItemForm" value="ref:duplicateCheckForm"/>
+      <Arg name="createdBy" value="ref:launcher"/>
+      <Arg name="duplicateIdentityList" value="ref:dupIdentities"/>
+    </Approval>
+    <Transition to="Start">
+      <Script>
+        <Source><![CDATA[
+
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+        Logger logger = Logger.getLogger("Rule-Check-Duplicate");
+        logger.setLevel(Level.DEBUG);
+        
+     
+       if(backButton !=null && sailpoint.tools.Util.isNotNullOrEmpty(backButton))
+          {
+
+         if(backButton.equalsIgnoreCase("previous"))
+         {
+         
+         logger.debug("backButton value==>"+backButton);
+         
+         return true;
+         
+         }
+         }
+		return false;
+       
+      ]]></Source>
+      </Script>
+    </Transition>
+    <Transition to="Create Plan"/>
+  </Step>
+  <Step icon="Provision" monitored="true" name="Create Plan" posX="470" posY="126" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[ 
+        import sailpoint.object.Link;
+        import sailpoint.object.Identity;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import java.util.List;
+        import sailpoint.api.Provisioner;
+        import sailpoint.object.Application;
+        import sailpoint.object.IdentityEntitlement;
+        import sailpoint.object.Attributes;
+        import java.text.SimpleDateFormat;
+        import java.util.Date;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
+        import sailpoint.api.IdentityService;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+        import sailpoint.api.ObjectUtil;
+
+        Logger logger = Logger.getLogger("Create Plan for Contractor HR");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("Printitng entity ********** : "+entity);
+        logger.debug("Printitng vendor company name  ********** : "+vendorCompanyName);
+
+        Identity idn = new Identity();
+        idn.setName(username);
+
+        idn.setAttribute("userType","Contractor");
+
+        logger.debug("Printitng identity : "+idn);
+
+        String idname =idn.getName();
+        identityName = idname;
+
+        logger.debug("Printing identityname idname : "+identityName);
+
+        ProvisioningPlan plan = new ProvisioningPlan();
+        plan.setIdentity(idn);
+
+        logger.debug("Printing plan");
+
+        if (modelMap != null) {
+
+        logger.debug("inside of if of madel map");
+
+        AccountRequest accReq = new AccountRequest();
+        accReq.setApplication(hrmsApp);
+        accReq.setNativeIdentity(idname);
+        accReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Create);
+
+        for (Map.Entry entry : modelMap.entrySet()) {
+        logger.debug("inside of loop  madel map");
+        Object obj = entry.getValue();
+
+        if (obj != null && obj instanceof Date)
+
+        {
+        logger.debug("inside if 2");
+        String temp = new SimpleDateFormat("MM/dd/yyyy").format(obj);
+
+
+        accReq.add(new AttributeRequest((String) entry.getKey(), ProvisioningPlan.Operation.Set,
+        temp == null ? null : temp));
+        } 
+        else if (obj != null && obj instanceof String) {
+        accReq.add(new AttributeRequest((String) entry.getKey(), ProvisioningPlan.Operation.Set,
+        entry.getValue() == null ? null : entry.getValue()));
+        }
+        }
+
+        //set isterminated attribute value "NO" to the account request
+        accReq.add(new AttributeRequest("is_terminated", ProvisioningPlan.Operation.Set,"NO"));
+
+
+        plan.add(accReq);
+        logger.debug("outside of condition");
+        logger.debug("Printing plan for Contractor HR Application"+plan.toXml());
+
+        return plan;
+        }
+      ]]></Source>
+    </Script>
+    <Transition to="Show message"/>
+  </Step>
+  <Step icon="Default" name="Show message" posX="588" posY="126">
+    <Script>
+      <Source><![CDATA[
+        import java.util.ArrayList;
+        import java.util.List;
+        import javax.faces.application.FacesMessage;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+
+        Logger  logger = Logger.getLogger("Show message");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("httpSession====>"+httpSession);
+
+        List currentMessages = httpSession.getAttribute("sailpoint.web.PageCodeBase.sessionMessages");
+        FacesMessage myMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Request submitted sucessfully", "");
+        List myMessages = new ArrayList();
+        myMessages.add(myMessage);
+        httpSession.setAttribute("sailpoint.web.PageCodeBase.sessionMessages", myMessages);]]></Source>
+    </Script>
+    <Transition to="Process JDBC Plan"/>
+  </Step>
+  <Step icon="Default" name="Process JDBC Plan" posX="714" posY="126" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[
+        import sailpoint.object.ProvisioningResult;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+
+        Logger logger = Logger.getLogger("Process JDBC Plan");
+        logger.setLevel(Level.DEBUG);
+
+
+        ProvisioningResult result = processJDBCPlan(plan);
+
+        plan.setResult(result);
+
+        return plan;
+
+      ]]></Source>
+    </Script>
+    <Transition to="Single Account Aggregation"/>
+  </Step>
+  <Step icon="Default" name="Single Account Aggregation" posX="880" posY="126">
+    <Script>
+      <Source><![CDATA[
+
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+
+
+        Logger logger = Logger.getLogger("Single Account Aggregation");
+        logger.setLevel(Level.DEBUG);
+
+
+        logger.debug("username==>"+username);
+        logger.debug("applicationName==>"+hrmsApp);
+
+
+        String accountAggregate = singleAccountAggregation(username,hrmsApp);
+
+        logger.debug("accountAggregate==>"+accountAggregate);
+
+      ]]></Source>
+    </Script>
+    <Transition to="Audit"/>
+  </Step>
+  <Step icon="Audit" name="Audit" posX="1112" posY="126">
+    <Script>
+      <Source><![CDATA[
+        import sailpoint.server.Auditor;
+        import sailpoint.object.AuditEvent;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import sailpoint.object.ProvisioningPlan.AttributeRequest;
+        import sailpoint.object.ProvisioningPlan.AccountRequest.Operation;
+        import sailpoint.object.ProvisioningResult;
+        import sailpoint.object.ProvisioningProject;
+        import sailpoint.object.EmailOptions;
+        import sailpoint.object.EmailTemplate;
+        import sailpoint.object.Identity;
+        import sailpoint.object.IdentityRequest;
+        import sailpoint.object.Attributes;
+        import java.util.List;
+        import sailpoint.tools.GeneralException;
+        import sailpoint.tools.Message;
+        import sailpoint.tools.Util;
+        import org.apache.log4j.Logger;
+        import org.apache.log4j.Level;
+        Logger logger = Logger.getLogger("Highmetric-Audit-Contractor HR");
+        logger.setLevel(Level.DEBUG);
+
+        List plans=null;
+        ProvisioningPlan currentPlan=null;
+        String Targetapp="";
+        String action="";
+        String identityName = username;
+
+        List planerrorMessages = new ArrayList();
+        List apperrorMessages = new ArrayList();
+
+        logger.debug("Identity name contains==>" + identityName);
+        Identity identity = context.getObjectByName(Identity.class, identityName);
+
+        String auditSource = "Workflow: " + wfcontext.getWorkflow().getName();
+
+        ProvisioningPlan plan1 = plan;
+        List <AccountRequest > accReqs = plan1.getAccountRequests();
+        String Instance = "";
+        String NativeIdentity = "";
+        String SEPARATOR = ",";
+        String Operror = "";
+        String Oaerror = "";
+        Attributes attrs = new Attributes();
+        List attributeRequests;
+        if (accReqs != null) {
+        for (AccountRequest accReq: accReqs) {
+        Instance = accReq.getInstance();
+        NativeIdentity = accReq.getNativeIdentity();
+        if (null != accReq.getAttributeRequests()) {
+        attributeRequests = accReq.getAttributeRequests();
+        if (!attributeRequests.isEmpty()) {
+        for (AttributeRequest attributeRequest: attributeRequests) {
+        attrs.put(attributeRequest.getName(), attributeRequest.getValue());
+        }
+        }
+        }
+        }
+        }
+        if (plan1.getResult() != null) {
+        logger.debug("Inside plan result");
+        ProvisioningResult result = plan1.getResult();
+        Targetapp = plan1.getTargetIntegration();
+        List planMessages = plan1.getResult().getErrors();
+        if (planMessages != null) {
+        logger.debug("Provisioning plan contains Error");
+        List planWarningMessages = plan1.getResult().getWarnings();
+        if (planWarningMessages != null) {
+        planMessages.addAll(planWarningMessages);
+        }
+        for (int k = 0; k < planMessages.size(); k++) {
+        Message message = (Message) planMessages.get(k);
+        planerrorMessages.add(message.getType().toString() + " message " + message.getMessage());
+        StringBuilder pBuilder = new StringBuilder();
+        for (String perror: planerrorMessages) {
+        pBuilder.append(perror);
+        pBuilder.append(SEPARATOR);
+        }
+        Operror = pBuilder.toString();
+        }
+        }
+        if (null != plan1.getResult()) {
+        logger.debug("result of the plan==>" + result.getStatus());
+        if (result.getStatus().equals(ProvisioningResult.STATUS_COMMITTED)) {
+        logger.debug("result of the plan STATUS_COMMITTED");
+        action = "STATUS_COMMITTED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Contractor Onboarding Provision has committed");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_QUEUED)) {
+        logger.debug("result of the plan STATUS_QUEUED");
+        action = "STATUS_QUEUED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4("Contractor Onboarding Provision has queued");
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        if (result.getStatus().equals(ProvisioningResult.STATUS_FAILED)) {
+        logger.debug("result of the plan STATUS_FAILED");
+        action = "STATUS_FAILED";
+        if (Auditor.isEnabled(action)) {
+        AuditEvent event = new AuditEvent();
+        event.setSource(auditSource);
+        event.setTarget(identityName);
+        event.setAction(action);
+        event.setApplication(Targetapp);
+        event.setInstance(Instance);
+        event.setAccountName(NativeIdentity);
+        event.setAttributes(attrs);
+        event.setString1(identityName);
+        event.setString2(Targetapp);
+        event.setString3(result.getStatus());
+        event.setString4(Operror);
+        Auditor.log(event);
+        context.commitTransaction();
+        }
+        }
+        }
+        }
+
+      ]]></Source>
+    </Script>
+    <Transition to="Refresh Identity Cube"/>
+  </Step>
+  <Step action="call:refreshIdentity" icon="task" name="Refresh Identity Cube" posX="1188" posY="126">
+    <Arg name="identityName" value="ref:username"/>
+    <Arg name="processTriggers" value="true"/>
+    <Arg name="promoteAttributes" value="true"/>
+    <Arg name="refreshManagerStatus" value="true"/>
+    <Description>  
+      Add arguments as necessary to enable refresh features.  Typically you  
+      only want this to correlate roles.  We might want provisioning, etc.  
+    </Description>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="1386" posY="126"/>
+</Workflow>

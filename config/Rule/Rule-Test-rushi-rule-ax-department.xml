@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-AX-Department">
+  <Source><![CDATA[    
+
+  import sailpoint.object.Custom; 
+  import sailpoint.object.Attributes;
+  import java.util.Collections;
+  import java.util.List;
+
+
+  Custom axDepartment = context.getObjectByName(Custom.class,"Highmetric-Custom-AX-Department");
+
+  Attributes attr = axDepartment.getAttributes();
+
+  List depNames = attr.getKeys();
+
+
+  String  eKey= "Legal";
+  String  adDepartment="";
+  String  adSubDepartment="";
+
+  Object obj = axDepartment.get(eKey);
+
+  if(obj!=null && obj instanceof Map)
+  {
+    HashMap depMap = (HashMap) obj;
+
+    if(depMap!=null)
+    {
+      if(depMap.get("adDepartment")!=null)
+      {
+        adDepartment = (String)depMap.get("adDepartment");
+      }
+      if(depMap.get("adSubDepartment")!=null)
+      {
+        adSubDepartment = (String)depMap.get("adSubDepartment");
+      }
+    }
+    return adDepartment+" "+adSubDepartment;
+  }
+
+  if(obj!=null && obj instanceof String)
+  {
+    String adDep = (String)obj;
+    if(adDep !=null && sailpoint.tools.Util.isNotNullOrEmpty(adDep))
+    {
+      adDepartment = adDep;
+    }
+
+    return adDepartment;
+  }
+
+ return "Object is null";
+  /*
+  if(depNames!=null)
+  {
+  Collections.sort(depNames);
+  return depNames;
+  }
+
+
+  */
+
+  ]]></Source>
+</Rule>

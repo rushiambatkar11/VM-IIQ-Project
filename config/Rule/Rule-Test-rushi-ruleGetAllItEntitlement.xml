@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule Get All It Entitlement">
+  <Source><![CDATA[
+  import org.apache.log4j.Logger;
+  import org.apache.log4j.Level;
+  import sailpoint.object.QueryOptions;
+  import sailpoint.object.Filter;
+  import sailpoint.object.Bundle;
+  import sailpoint.object.Profile;
+  import sailpoint.object.Application;
+
+  Logger logger = Logger.getLogger("Test-Rule Get All It Entitlement ");
+  logger.setLevel(Level.DEBUG);
+
+  QueryOptions ques = new QueryOptions();
+  ques.add(Filter.eq("type","IT"));
+
+  Application AdApp = context.getObjectByName(Application.class,"Active Directory");
+
+  List itRoles = context.getObjects(Bundle.class,ques);
+  List itRolesList = new ArrayList();
+
+  if(itRoles!=null)
+  {
+    //iterate through all IT Roles
+    for(Bundle role:itRoles)
+    {
+      itRolesList.add(role.getName());
+
+      List profileList = role.getProfiles();
+
+      //iterate through all profile
+
+      if(profileList!=null)
+      {
+        for(Profile prof:profileList)
+        {
+          List filterList =prof.getConstraints();
+
+          if(filterList!=null)
+          {
+            for(Filter filter:filterList)
+            {
+
+              Object obj = filter.getExpression();
+
+              logger.debug("Object instance contains==>"+obj.getClass());
+              logger.debug("Object instance contains==>"+filter.getValue());
+
+              Object obj11 = AdApp.getAttributeValue("memberOf");
+
+              logger.debug("obj11"+obj11);
+
+
+             // return filter.getExpression();
+
+
+            }
+          }
+
+
+        }
+
+
+      }
+    }
+  }
+  return itRolesList;
+
+
+
+  ]]></Source>
+</Rule>

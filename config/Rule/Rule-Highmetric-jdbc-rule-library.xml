@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Highmetric-JDBC-Rule-Library">
+  <Source><![CDATA[
+  import java.util.Date;
+  import java.sql.Connection;
+  import java.sql.DriverManager;
+  import java.sql.PreparedStatement;
+  import java.sql.Statement;
+  import java.sql.SQLException;
+  import java.sql.ResultSet;
+  import java.sql.Types;
+  import java.util.List;
+  import sailpoint.api.SailPointContext;
+  import sailpoint.connector.JDBCConnector;
+  import sailpoint.object.Application;
+  import sailpoint.object.ProvisioningPlan;
+  import sailpoint.object.ProvisioningPlan.AccountRequest;
+  import sailpoint.object.ProvisioningPlan.AttributeRequest;
+  import sailpoint.object.ProvisioningPlan.PermissionRequest;
+  import sailpoint.object.ProvisioningResult;
+  import sailpoint.object.Schema;
+  import sailpoint.tools.xml.XMLObjectFactory;
+  import org.apache.commons.logging.LogFactory;
+  import org.apache.commons.logging.Log;
+  import sailpoint.tools.Util;
+  import org.apache.log4j.Logger;
+  import org.apache.log4j.Level;
+  import sailpoint.object.IdentityRequest;
+  import sailpoint.object.ProvisioningProject;
+  import sailpoint.object.Attributes;
+  import sailpoint.server.Environment;
+
+
+  //
+  // Internal method for grabbing an Attribute Request Value.
+  //
+
+  public Object getAttributeRequestValue(AccountRequest acctReq, String attribute) {
+    if ( acctReq != null ) {
+      AttributeRequest attrReq = acctReq.getAttributeRequest(attribute);
+
+      if ( attrReq != null ) {
+        return attrReq.getValue();
+      }
+    }
+    return null;
+  }
+
+  public ProvisioningResult processJDBCPlan(ProvisioningPlan plan) {
+    Connection connection = null;
+    PreparedStatement statement =null;    
+    ProvisioningResult result = new ProvisioningResult();
+
+    try {
+
+      if ( plan != null ) {
+
+        Logger logger = Logger.getLogger("Highmetric-Rule-Global-JDBC-Provisioning");
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug("plan contains in Provision HRMS Rule==>"+plan.toXml());
+
+        Environment environment = Environment.getEnvironment();
+        connection = environment.getPluginsConfiguration().getDataSource().getConnection();
+
+        List accounts = plan.getAccountRequests();
+
+        int i= 0;
+
+        if(accounts!=null)
+        {
+          for (AccountRequest acctReq : accounts) 
+          {
+            String updateSubQuery = "";
+            String querybuild = "";
+            String insertSubQuery ="";
+            String appName = acctReq.getApplicationName();
+
+            logger.debug("Application name==>"+appName);
+            String nativeId = acctReq.getNativeIdentity();
+            logger.debug("Native identity==>"+nativeId);
+
+            List attributeRequests = acctReq.getAttributeRequests();
+
+            // This for create operation 
+
+            if (acctReq != null && acctReq.getOperation() != null && acctReq.getOperation().equals(ProvisioningPlan.AccountRequest.Operation.Create)) {
+
+              String columnName="";
+              String columnVlaue="";
+
+              if (attributeRequests != null) {
+
+                for (ProvisioningPlan.AttributeRequest attributeRequest : attributeRequests) {
+
+                  if (attributeRequest.getOperation().equals(ProvisioningPlan.Operation.Set) && attributeRequest.getName() != null) {
+                    columnName= columnName+""+attributeRequest.getName()+",";
+                    columnVlaue=columnVlaue+"'"+(String) attributeRequest.getValue()+"',";
+                  }
+                }
+
+                columnName=columnName.substring(0, columnName.length()-1);
+                columnVlaue=columnVlaue.substring(0, columnVlaue.length()-1);
+
+                logger.debug("database column name "+columnName);
+                logger.debug("database column value "+columnVlaue);
+              }
+
+              if (null != columnName && sailpoint.tools.Util.isNotNullOrEmpty(columnName) &&  null != columnVlaue && sailpoint.tools.Util.isNotNullOrEmpty(columnVlaue) && null != nativeId && sailpoint.tools.Util.isNotNullOrEmpty(nativeId)) {
+
+                if (appName.equalsIgnoreCase("Employee HR")) {
+                  querybuild = "insert into identityiqPlugin.employee_hr ( " +columnName+ ") values ("+columnVlaue+")";             
+                }
+
+                logger.debug("Insert Query For Employee==>"+querybuild);
+
+                if (appName.equalsIgnoreCase("Contractor HR")) {
+                  querybuild = "insert into  identityiqPlugin.contractor_hr ( " +columnName+ ") values ("+columnVlaue+")";
+                }
+
+                logger.debug("Insert Query For Contractor==>"+querybuild);
+
+                if (null != querybuild && sailpoint.tools.Util.isNotNullOrEmpty(querybuild)) {
+                  try {
+                    statement = connection.prepareStatement(querybuild);
+                    statement.executeUpdate();
+                    result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+                    logger.debug("Insertion done sucessfully");
+                  }
+                  catch (SQLException e) {
+                    result.setStatus(ProvisioningResult.STATUS_FAILED);
+                    result.addError(e);
+                  }
+                }
+              }
+            }
+
+            if (acctReq != null && acctReq.getOperation() != null && acctReq.getOperation().equals(ProvisioningPlan.AccountRequest.Operation.Modify)) {
+
+              if (attributeRequests != null) {
+
+                for (ProvisioningPlan.AttributeRequest attributeRequest : attributeRequests) {
+
+                  if (attributeRequest.getOperation().equals(ProvisioningPlan.Operation.Set) && attributeRequest.getName() != null) {
+
+                    updateSubQuery =updateSubQuery+""+attributeRequest.getName() + "=" +"'"+(String) attributeRequest.getValue() +"'" + ",";
+                  }
+                }
+
+                updateSubQuery= updateSubQuery.substring(0, updateSubQuery.length()-1);
+
+                logger.debug("After AttributeRequest request query==>"+updateSubQuery);
+              }
+
+              if (null != updateSubQuery && sailpoint.tools.Util.isNotNullOrEmpty(updateSubQuery) && null != nativeId && sailpoint.tools.Util.isNotNullOrEmpty(nativeId)) {
+
+                if (appName.equalsIgnoreCase("Employee HR")) {
+                  querybuild = "update identityiqPlugin.employee_hr set " + updateSubQuery + " where username LIKE " +"'"+nativeId +"'";
+                }
+
+                logger.debug("Update Query For Employee==>"+querybuild);
+
+                if (appName.equalsIgnoreCase("Contractor HR")) {
+                  querybuild = "update identityiqPlugin.contractor_hr set " + updateSubQuery +" where username LIKE " +"'"+nativeId +"'";
+                }
+                logger.debug("Update Query For Contractor==>"+querybuild);
+
+                if (null != querybuild && sailpoint.tools.Util.isNotNullOrEmpty(querybuild)) {
+                  try {
+                    statement = connection.prepareStatement(querybuild);
+                    statement.executeUpdate();
+                    result.setStatus(ProvisioningResult.STATUS_COMMITTED);
+                  }
+                  catch (SQLException e) {
+                    result.setStatus(ProvisioningResult.STATUS_FAILED);
+                    result.addError(e);
+                  }
+                }
+              }
+            }
+          } 
+        } 
+      }
+    } 
+    catch (SQLException e) {
+      result.setStatus(ProvisioningResult.STATUS_FAILED);
+      result.addError(e);
+    }
+    finally {
+
+    }
+
+    return result;
+  }
+  ]]></Source>
+</Rule>

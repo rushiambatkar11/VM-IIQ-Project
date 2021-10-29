@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-Check-Duplicate">
+  <Source><![CDATA[
+  import sailpoint.object.Identity; 
+  import sailpoint.object.QueryOptions;
+  import sailpoint.object.Filter;
+  import java.util.List;
+  import java.util.ArrayList;
+  import org.apache.log4j.Logger;
+  import org.apache.log4j.Level;
+   
+   Logger logger = Logger.getLogger("Rule-Check-Duplicate");
+   logger.setLevel(Level.DEBUG);
+   
+  
+  QueryOptions qo = new QueryOptions();
+  List listDupIdentities = new ArrayList();
+ 
+  String firstName = "Chris";
+  String lastName = "Evens";
+  
+  if(sailpoint.tools.Util.isNotNullOrEmpty(firstName) && sailpoint.tools.Util.isNotNullOrEmpty(lastName))
+  {
+ 
+  qo.addFilter(Filter.eq("firstname",firstName));
+  qo.addFilter(Filter.eq("lastname",lastName));
+  
+  
+  
+List dupIdentities = context.getObjects(Identity.class,qo);
+
+  
+if (null != dupIdentities) {
+
+for (Identity idn : dupIdentities) {
+
+logger.debug("Identity"+ idn.getName());
+listDupIdentities.add(idn.getName());
+
+//after adding decache this all.
+context.decache();
+}
+
+}
+}
+if(listDupIdentities!=null)
+{
+return listDupIdentities;
+}
+
+
+
+  ]]></Source>
+</Rule>

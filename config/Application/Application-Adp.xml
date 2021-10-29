@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.webservices.WebServicesConnector" featuresString="PROVISIONING, ENABLE, PASSWORD, AUTHENTICATE" name="ADP" profileClass="" type="Web Services">
+  <Attributes>
+    <Map>
+      <entry key="acctAggregationEnd">
+        <value>
+          <Date>1615886987868</Date>
+        </value>
+      </entry>
+      <entry key="acctAggregationStart">
+        <value>
+          <Date>1615886984899</Date>
+        </value>
+      </entry>
+      <entry key="afterProvisioningRule"/>
+      <entry key="authenticationMethod" value="OAuth2Login"/>
+      <entry key="beforeProvisioningRule"/>
+      <entry key="clientCertAuthEnabled">
+        <value>
+          <Boolean>true</Boolean>
+        </value>
+      </entry>
+      <entry key="clientCertUploadedOn" value="03 Mar 2021 at 04:29:16 GMT"/>
+      <entry key="clientCertificate" value="1:ACP:fPqmHU0Ycu8FjUBLtpUXFbJO7lDqx4ju3ya/i/7rBwUSMUicebCAz4YdNSYHq+xdId8RypVb9LjC&#10;4mRkkoHqSO6fbTLBQsHGj3m8cSzjesoNcQXXkNLDKBVN2qJEMyxgAX/4PfTcicZpCb+XnSWvCr+R&#10;bW+V5vC5QpNPLfbfXgof8yFc/U1eqF/UOMgROHC40sn4iEXL2MTkigg2V8xddAFxP56TBTBMmadM&#10;9nmrogB6dkZJnwAQwnNpGHuHEh+OTRRw5alsGzy4w1oP+kF9nJS7C3Q0Tz0l2DQgTAKivf2Bpqid&#10;mFRv2Lt+pJMXJD3dFEIgME7jw1c0Czp7ec0Fc5Z2/8p3lskwyRtEA1EBcpDWqEi8dNuAM6bGz2rk&#10;CqZmoVzYU/xQJYs/FtAQXCtyZh0ycQSdwNHeCzA3Q7HmGgF1EiaNoEnWi4mF9E1KurhX95/ktL89&#10;e9Ur2hWlTT0I3WxiZSkTvaRG6D4WTlI+XXCoBiCwxC9TwExbYJuNonSP7KlzTac+bqYOAcJItb17&#10;BVXysSngg4cfr8ZhemPB4CtPO0PUAYCH9u7/kcFIGSH3rna8aT4/iSaa72NQ8/hwK/od9YgFtnW9&#10;RBKo3EOHrDpboAqcmcf2VDkala9yAfXytlm3CdpyfcK3wRIpRa0hOPJLfM7iOgNPRBZ9boSjPxX4&#10;LBGvC3SlCSuDwjqwjJUQ0y0kuTHPSgBMbbSBffAM6WblLMa9laP67ovnihrz6XG6rHJ7NEnyqhVS&#10;zjtQMA4e7nGaq5ZSCSESpPOZ6cyrx1x9KhjjgGz7/Ho0MBLdOs563BCG9ddc1eo5cb5SeaEGIbNK&#10;NeQJS0j1Od5hFGMaf/Yl2q741Ng3+HFAPOXWIiHJqXvB3a5ViHwTn/ovkWOYZ80ez2qQRJ4+W+zC&#10;doOqeR5c2joGWS3lc9Yw+qO84C8iT5tPTC4XiWy5EmAzR0qcZV7yDvFxF7tHA5Atp0zysoWlab6Y&#10;qJYctYvBh4eKHqZ/QSQfvrHEkoC9KwsphDaMt4UihQ7C3jtHCPIEgmPOih2Pj/oiGEHHJlM1vNas&#10;Oyz81Lv/rnh9q7tZywxQ71l6Zz6u3E75aIc27a02AEe9ogbmB4PXhYHilnLm3lHpN9RYjxNp9DeR&#10;lHspCY4s4tnLP/ULh0EcnxEK5gN32BT++NW1QUjrOwVZPjeEwbXi9hzKrmgdEcT+sVwxokC/plLU&#10;sd2Pig/DlcbnZhV1uu/VljxPYmXMlEFBwxZqpOpSwv2FHBCx3cvF03yJwlCI73J2SHAZ58WCHy2D&#10;xeNwe1twfLl/FEmlHRhYafVGRKRu5pHl4c2yLfBby33yb+wHAzziwNEmlAmPRN7E3Z5q9+SbWA7E&#10;YhBsr4ae7NKGGRFLYpc5ToGiHQ4GyHWyN1CZNfXW0ucINHWHcYmghtC8tlFMlhnlD4ot13tvEfZL&#10;Oxva5GvqmlPtCaYsWncwVlljPEc5Gyw3CjHueVWKokwr36VMSFle7WJOR04csnn7LigE8XvjHm39&#10;EEJhm03IGx0NLbraGy+GH3bMrGzNnuuaPCVbYxsdMVhdCf7Gj2qPZJayLD78ud4BjMp1NKpmXWFO&#10;p70hNbx9tSP6nBF2NeboVGFiVrbtQ/QZSkP4JD3vu2CUzoFj5il0uTNQMxFqCzK2JYyCW4ae0btZ&#10;h/h2FfzlCkPwp0zKuiazg2xNWL+qsenDHFBRGKIs++fOgmn6abLxgM9PIlnZ1ve91zY3NU/Th5/h&#10;AR5oHt6/05VoYWu6nDv5E75+w8tj8xpnhxNzeLb12g5IDzyMoquDKQR6rwmFGuWVcsfIkFWeA9ys&#10;M5rxflftshGFs5bkdGGyp3fVAoupQ1qvbXrCCFtKPS0usiXXUdmFx4OEMz3ZPGJdS888LAZ9I/gx&#10;crDFjUiPabbqmAKRD0LOYUKwaKyjnpdCoZuSlxoZx8afm70loRQwja6DWWgH/iCcPETRckDsEwHY&#10;rJHey9AurxauFmSmN5QITQ467jBEtcrO5VSF/Z1gMnkiCrvlnt9UqthFQLPzurXTBFedSpYxqhcn&#10;tmJzYk5+OBvZrpRgBSZV/nhLeI4UrSlMUG1Ye6PT/LE8wtlcX8sCm8N73Ao0o4JhUAHrUbX+V+fT&#10;9ZgfObrHvK8ukiSpKS3vshJIfORfjjB82JIk9e0RWwaPL9K80xCbtm08HGc3d8Z31oTr4Vx57WUC&#10;hZsT+1nWFSLdIGX4InvNn/txF1kWQaY6rSjILWhYG5SLm14Kj7XwANtD+SFN97umvV0gm/o3urrW&#10;8iD4BFM4NnJywFhb3YkOw4712gRKItFe+0qPsQwiVZdFICW2GwG1sy5tfDmaIwaqodY1G/cxu2ep&#10;+oHM3TV3C5fza57kGuOTTnk1Hg3B5FLHVfu0kJO2pE4uNgbvpP/eG54MVEiJBXJc6ONtDFjuvYID&#10;/Ovyi67LtIqXjL72OfCW0mW1DBQAtQz6XN11c9AM8gexL53XOGAxdvJ0IUk35/Np8tswcz8WcNAj&#10;/5NEeSF9YsDBCudf+Mz3lYjwshJinQXqE8IJEZvq8PUs5hLxbXFE9eXnJkEgLDQ/Hr6XsdEtZeEg&#10;wddHIHSDn53PzLsYVg0zb81SbBRqIISFSCqQ436NLdT6QlAiLuv+hMLEOg9lYKS4DYvDxH4tqae+&#10;UgWDiC+qg2CCX0DW6hIKfgLClvoPlzHDhSsvyxocQqNL68+hJeg4WjJRULTMJWi4xvVAAveTZIKz&#10;49Yjh77TtfYhAhL2"/>
+      <entry key="clientKeySpec" value="1:ACP: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&#10;Q5rxiIaHvXaqIOwxqV1k+Tfs"/>
+      <entry key="client_id" value="4ecca3e4-9116-4b36-bc36-57b9678a14d7"/>
+      <entry key="client_secret" value="1:ACP:rioEdmo1Nh8NlVg53vy9YW7ZNa/vvV0AfVU+qkpWd15PYXOxKb0kbXu16V/KrI1bIJGYuXab5sW8&#10;yDDTI5gQmA=="/>
+      <entry key="compositeDefinition"/>
+      <entry key="connectionParameters">
+        <value>
+          <List>
+            <Map>
+              <entry key="afterRule"/>
+              <entry key="beforeRule" value="Highmetric-ADP-Before-Rule-Account-Aggregation"/>
+              <entry key="body">
+                <value>
+                  <Map>
+                    <entry key="bodyFormData"/>
+                    <entry key="bodyFormat" value="raw"/>
+                    <entry key="jsonBody"/>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="contextUrl" value="/hr/v2/workers"/>
+              <entry key="header">
+                <value>
+                  <Map>
+                    <entry key="Content-Type" value="application/json"/>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="httpMethodType" value="GET"/>
+              <entry key="operationType" value="Test Connection"/>
+              <entry key="paginationSteps"/>
+              <entry key="pagingInitialOffset">
+                <value>
+                  <Integer>0</Integer>
+                </value>
+              </entry>
+              <entry key="pagingSize">
+                <value>
+                  <Integer>50</Integer>
+                </value>
+              </entry>
+              <entry key="parentEndpointName"/>
+              <entry key="resMappingObj"/>
+              <entry key="responseCode">
+                <value>
+                  <List>
+                    <String>200</String>
+                  </List>
+                </value>
+              </entry>
+              <entry key="rootPath"/>
+              <entry key="sequenceNumberForEndpoint" value="1"/>
+              <entry key="uniqueNameForEndPoint" value="ADP Test Connection"/>
+              <entry key="xpathNamespaces"/>
+            </Map>
+            <Map>
+              <entry key="afterRule" value="Highmetric-ADP-After-Rule-Account-Aggregation"/>
+              <entry key="beforeRule" value="Highmetric-ADP-Before-Rule-Account-Aggregation"/>
+              <entry key="body">
+                <value>
+                  <Map>
+                    <entry key="bodyFormData"/>
+                    <entry key="bodyFormat" value="raw"/>
+                    <entry key="jsonBody"/>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="contextUrl" value="/hr/v2/workers?$top=500"/>
+              <entry key="header">
+                <value>
+                  <Map>
+                    <entry key="Content-Type" value="application/json"/>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="httpMethodType" value="GET"/>
+              <entry key="operationType" value="Account Aggregation"/>
+              <entry key="paginationSteps"/>
+              <entry key="pagingInitialOffset">
+                <value>
+                  <Integer>0</Integer>
+                </value>
+              </entry>
+              <entry key="pagingSize">
+                <value>
+                  <Integer>50</Integer>
+                </value>
+              </entry>
+              <entry key="parentEndpointName"/>
+              <entry key="resMappingObj">
+                <value>
+                  <Map>
+                    <entry key="address" value="person.legalAddress.cityName"/>
+                    <entry key="associateOID" value="associateOID"/>
+                    <entry key="country" value="person.legalAddress.countryCode"/>
+                    <entry key="email" value="businessCommunication.emails[0].emailUri"/>
+                    <entry key="firstname" value="person.legalName.givenName"/>
+                    <entry key="jobTitle" value="workAssignments[0].jobTitle"/>
+                    <entry key="lastname" value="person.legalName.familyName1"/>
+                    <entry key="manager" value="workAssignments[0].reportsTo[0].reportsToWorkerName.formattedName"/>
+                    <entry key="middlename" value="person.legalName.middleName"/>
+                    <entry key="officeLocation" value="workAssignments[0].homeWorkLocation.nameCode.shortName"/>
+                    <entry key="personalEmail" value="person.communication.emails[0].emailUri"/>
+                    <entry key="phoneno" value="person.communication.mobiles[0].formattedNumber"/>
+                    <entry key="practiceLine" value="customFieldGroup.codeFields[3].nameCode.shortName"/>
+                    <entry key="region" value="customFieldGroup.codeFields[0].nameCode.shortName"/>
+                    <entry key="remote" value="customFieldGroup.stringFields[0].nameCode.shortName"/>
+                    <entry key="salutation" value="person.genderCode.longName"/>
+                    <entry key="startDate" value="workerDates.originalHireDate"/>
+                    <entry key="state" value="person.legalAddress.countrySubdivisionLevel1.codeValue"/>
+                    <entry key="status" value="workerStatus.statusCode.codeValue"/>
+                    <entry key="terminationDate" value="workerDates.terminationDate"/>
+                    <entry key="travelBouns" value="customFieldGroup.codeFields[2].nameCode.shortName"/>
+                    <entry key="username"/>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="responseCode">
+                <value>
+                  <List>
+                    <String>200</String>
+                  </List>
+                </value>
+              </entry>
+              <entry key="rootPath" value="$.workers[*]"/>
+              <entry key="sequenceNumberForEndpoint" value="2"/>
+              <entry key="uniqueNameForEndPoint" value="ADP Account Aggregation"/>
+              <entry key="xpathNamespaces"/>
+            </Map>
+          </List>
+        </value>
+      </entry>
+      <entry key="createAccountWithEntReq">
+        <value>
+          <Boolean/>
+        </value>
+      </entry>
+      <entry key="enableHasMore" value="true"/>
+      <entry key="enableStatus"/>
+      <entry key="encrypted" value="accesstoken,refresh_token,oauth_token_info,client_secret,private_key,private_key_password,clientCertificate,clientKeySpec,resourceOwnerPassword"/>
+      <entry key="genericWebServiceBaseUrl" value="https://api.adp.com"/>
+      <entry key="grant_type" value="CLIENT_CREDENTIALS"/>
+      <entry key="httpCookieSpecsStandard" value="true"/>
+      <entry key="isGetObjectRequiredForPTA">
+        <value>
+          <Boolean>true</Boolean>
+        </value>
+      </entry>
+      <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
+      <entry key="nativeChangeDetectionAttributes"/>
+      <entry key="nativeChangeDetectionEnabled">
+        <value>
+          <Boolean/>
+        </value>
+      </entry>
+      <entry key="nativeChangeDetectionOperations"/>
+      <entry key="oAuthJwtHeader">
+        <value>
+          <Map>
+            <entry key="alg" value="RS256"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="oAuthJwtPayload">
+        <value>
+          <Map>
+            <entry key="aud"/>
+            <entry key="exp" value="15f"/>
+            <entry key="iss"/>
+            <entry key="sub"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="oauth_body_attrs_to_exclude" value="client_id,client_secret"/>
+      <entry key="oauth_token_info" value="1:ACP:NChM0QJWCwv2F/hWWhXfB1owfyor3vKeqwFHHBaqobSF5AOzvsqZv+yWDlyTTx18NaWzBtuR8dZX&#10;3Joac0Hwlg4vVp8Qih7wInDrJDlnXynvzhy+4D6icEY4QuDtFTftnWl2BPr5zdxNuqogbJxKBwAq&#10;JlQG7B61Tv/nzdV4ksMzKRpUIVYdhZRNx4WbL22KB1HfiLXu1QKkmSrsTh8tgQ=="/>
+      <entry key="private_key_to_update"/>
+      <entry key="saml_assertion_url"/>
+      <entry key="saml_request_body"/>
+      <entry key="sysDescriptions">
+        <value>
+          <Map>
+            <entry key="en_US"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="templateApplication" value="Web Services"/>
+      <entry key="throwProvAfterRuleException">
+        <value>
+          <Boolean>true</Boolean>
+        </value>
+      </entry>
+      <entry key="throwProvBeforeRuleException">
+        <value>
+          <Boolean>true</Boolean>
+        </value>
+      </entry>
+      <entry key="timeoutInSeconds"/>
+      <entry key="token_url" value="https://api.adp.com/auth/oauth/v2/token"/>
+    </Map>
+  </Attributes>
+  <CorrelationRule>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-Rule-ADP-Correlation"/>
+  </CorrelationRule>
+  <CreationRule>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-Rule-ADP-IdentityCreation"/>
+  </CreationRule>
+  <CustomizationRule>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-Rule-ADP-ResourceObjectCustomization"/>
+  </CustomizationRule>
+  <ManagerCorrelationRule>
+    <Reference class="sailpoint.object.Rule" name="Highmetric-Rule-ADP-ManagerCorrelation"/>
+  </ManagerCorrelationRule>
+  <Owner>
+    <Reference class="sailpoint.object.Identity" name="spadmin"/>
+  </Owner>
+  <Schemas>
+    <Schema displayAttribute="username" groupAttribute="" identityAttribute="associateOID" instanceAttribute="" nativeObjectType="user" objectType="account">
+      <AttributeDefinition name="associateOID" type="string">
+        <Description>User Asoociated ID</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="salutation" type="string">
+        <Description>salutation</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="firstname" type="string">
+        <Description>firstname</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="middlename" type="string">
+        <Description>middlename</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="lastname" type="string">
+        <Description>lastname</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="phoneno" type="string">
+        <Description>phoneno</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="country" type="string">
+        <Description>country</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="startDate" type="string">
+        <Description>Start Date</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="status" type="string">
+        <Description>status</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="email" type="string">
+        <Description>email</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="manager" type="string">
+        <Description>manager</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="state" type="string">
+        <Description>state</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="address" type="string">
+        <Description>address</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="jobTitle" type="string">
+        <Description>jobTitle</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="terminationDate" type="string">
+        <Description>terminationDate</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="officeLocation" type="string">
+        <Description>officeLocation</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="username" type="string">
+        <Description>username</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="personalEmail" type="string">
+        <Description>personalEmail</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="practiceLine" type="string">
+        <Description>practiceLine</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="region" type="string">
+        <Description>region</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="travelBouns" type="string">
+        <Description>travelBouns</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="remote" type="string">
+        <Description>remote</Description>
+      </AttributeDefinition>
+    </Schema>
+    <Schema descriptionAttribute="" displayAttribute="" identityAttribute="" instanceAttribute="" nativeObjectType="group" objectType="group"/>
+  </Schemas>
+  <ApplicationScorecard/>
+</Application>

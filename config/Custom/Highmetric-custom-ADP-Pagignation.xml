@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="Highmetric-custom-ADP-Pagignation">
+  <Attributes>
+    <Map>
+      <entry key="skip">
+        <value>
+          <Integer>700</Integer>
+        </value>
+      </entry>
+      <entry key="top">
+        <value>
+          <Integer>100</Integer>
+        </value>
+      </entry>
+      <entry key="url" value="https://api.adp.com/hr/v2/workers"/>
+    </Map>
+  </Attributes>
+</Custom>

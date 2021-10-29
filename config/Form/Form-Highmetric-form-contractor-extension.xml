@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Form name="Highmetric-Form-Contractor-Extension" type="Workflow">
+  <Section name="My Image Section" type="text">
+    <Field>
+      <Script>
+        <Source><![CDATA[
+          import java.lang.String;
+          import java.lang.StringBuilder;
+          StringBuilder sb = new StringBuilder();
+          sb.append("<style>");
+          sb.append("#table1 {");
+          sb.append("font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;");
+          sb.append("width: 100%; }");
+          sb.append("#stop {");
+          sb.append("width='10%;'");
+          sb.append("padding-top: 2px;");
+          sb.append("padding-bottom: 2px;");
+          sb.append("text-align: center; }");
+          sb.append("</style>");
+          sb.append("<table cellpadding='0' cellspacing='0' width='100%' border='0' align='center' style='margin:0 auto;padding:0;'>");
+          sb.append("<td width='90%'>");
+          sb.append("<p style='margin:0 0 10px;padding-top:20px;color:#649825;font:normal 20pt Arial;line-height:15pt;text-align:left;padding-right:10px;'> Contractor Extension Form");
+          sb.append("</p>");
+          sb.append("</td></tr>");
+          sb.append("</table>");
+          return sb.toString(); 
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section label="Extend Contractor" name="extendContractor">
+    <Field displayName="Select Contractor Status" displayType="radio" name="contractorstatus" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Active Contractor</String>
+            <String>Inactive Contractor</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+    </Field>
+  </Section>
+  <Section name="updateActiveContractor">
+    <Attributes>
+      <Map>
+        <entry key="hidden">
+          <value>
+            <Script>
+              <Source><![CDATA[
+                import org.apache.log4j.Logger;
+                import org.apache.log4j.Level;
+
+                Logger logger = Logger.getLogger("Contractor Extension update Active Contractor");
+                logger.setLevel(Level.DEBUG);
+
+                String contractorstatus = form.getField("contractorstatus").getValue();
+
+                logger.debug("contractorType ==>"+contractorstatus);
+
+                if (contractorstatus != null) 
+                {		 
+                return false;
+                } 
+                return true;
+              ]]></Source>
+            </Script>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Field columnSpan="1" dependencies="contractorstatus" displayName="Select Contractor" dynamic="true" name="selectcontractor" postBack="true" required="true" type="sailpoint.object.Identity">
+      <Attributes>
+        <Map>
+          <entry key="filterString">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                  import sailpoint.object.Filter;
+                  import java.util.ArrayList;
+                  import java.util.List;
+
+                  import org.apache.log4j.Logger;
+                  import org.apache.log4j.Level;
+
+
+                  Logger logger = Logger.getLogger("Inside Select Contractor filterString");
+                  logger.setLevel(Level.DEBUG);
+
+                  List filters = new ArrayList();
+
+                  String contractorStatus = form.getField("contractorstatus").getValue();
+
+                  logger.debug("contractorStatus: " + contractorStatus);  
+
+                  if(contractorStatus!=null)
+                  {
+                  if(contractorStatus.equalsIgnoreCase("Active Contractor"))
+                  {
+                  filters.add(Filter.eq("inactive",false));
+                  }
+
+                  else if(contractorStatus.equalsIgnoreCase("Inactive Contractor"))
+                  {
+                  filters.add(Filter.eq("inactive",true));
+                  }
+
+                  filters.add(Filter.eq("type","Contractor"));
+                  Filter finalFilter = Filter.and(filters);                 
+                  field.setFilterString(finalFilter.toString());
+                  }
+
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Field>
+  </Section>
+  <Section columns="3" label="Update Contractor Details" name="updatecontractorUserDetails">
+    <Attributes>
+      <Map>
+        <entry key="hidden">
+          <value>
+            <Script>
+              <Source><![CDATA[
+                import org.apache.log4j.Logger;
+                import org.apache.log4j.Level;
+                import sailpoint.object.Identity;
+                Logger logger = Logger.getLogger("Active Contractor update User Details");
+                logger.setLevel(Level.DEBUG);
+
+                String selectcontractor = form.getField("selectcontractor")!=null ? form.getField("selectcontractor").getValue():null;    
+                String contractorstatus = form.getField("contractorstatus").getValue();
+
+                logger.debug("selectcontractor ==>"+selectcontractor);
+                logger.debug("contractorstatus ==>"+contractorstatus);
+
+                if (selectcontractor!=null && contractorstatus != null ) 
+                {		 
+                return false;
+                } 
+                return true;
+              ]]></Source>
+            </Script>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Field columnSpan="1" displayName="Username" dynamic="true" name="username" postBack="true" readOnly="true" required="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor Extension update Active Contractor");
+          logger.setLevel(Level.DEBUG);
+
+          String selectContractor = form.getField("selectcontractor")!=null ? form.getField("selectcontractor").getValue():null;
+
+          String contractorstatus = form.getField("contractorstatus").getValue();
+
+          if(selectContractor!=null)
+          {
+          Identity identity = context.getObjectById(Identity.class,selectContractor);
+
+          logger.debug("selectContractor==>"+ identity.getName());
+          logger.debug("contractorstatus==>" + contractorstatus);
+          logger.debug("isInactive==>"+ identity.isInactive());
+
+          if(identity.isInactive() && contractorstatus.equalsIgnoreCase("Inactive Contractor")) {
+          return identity.getName();
+          }
+          else if(!identity.isInactive() && contractorstatus.equalsIgnoreCase("Active Contractor")) {
+          return identity.getName();
+          }
+          else {
+          form.getField("selectcontractor").setValue(null);
+          return null;
+          }
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="First Name" dynamic="true" name="firstname" readOnly="true" required="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+
+          if(username!=null)
+          {
+          Identity identiy = context.getObjectByName(Identity.class,username);
+          return identiy.getFirstname();
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Last Name" dynamic="true" name="lastname" readOnly="true" required="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor Last Name");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          return identiy.getLastname();
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Email" dynamic="true" name="email" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active Contractor Email");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String vemail= identity.getAttribute("vendorEmail");
+
+          logger.debug("Vendor Email===>"+vemail);
+
+          String email = identity.getEmail();
+
+          logger.debug("email===>"+email);
+
+          if(email!=null)
+          {
+          return email;
+          }
+          else if(vemail!=null)
+          {
+          return vemail;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Entity" displayType="combobox" dynamic="true" name="entity" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+
+            Logger logger = Logger.getLogger("Active Contractor Entity");
+            logger.setLevel(Level.DEBUG);
+
+
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-Company");
+
+            if (custom != null) {
+            List companyList  = custom.getList("Company");
+            if(companyList!=null && !(sailpoint.tools.Util.isEmpty(companyList)))
+            {
+            //sort the list in alphabetical order
+            Collections.sort(companyList);
+            return companyList;
+            }
+            }
+            return "sailpoint";
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Script>
+        <Source><![CDATA[
+          import sailpoint.object.Identity;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+
+          Logger logger = Logger.getLogger("Active Contractor Entity");
+          logger.setLevel(Level.DEBUG);
+
+          String identityName = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          logger.debug("identityName contsins==>"+identityName);
+
+          if(identityName!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class, identityName);
+
+          String entity = identity.getAttribute("entity");
+
+          logger.debug("identityName entity==>"+entity);
+
+          if(entity!=null)
+          {
+          return entity;
+          }
+          }	
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="User Type" dynamic="true" name="type" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active Contractor Type of Hire");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String type= identity.getAttribute("type");
+
+          logger.debug("Type===>"+type);
+
+          if(type!=null)
+          {
+          return type;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Type of Hire" dynamic="true" name="typeOfHire" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+
+            List typeOfHire = new ArrayList();
+
+            typeOfHire.add("Temp");
+            typeOfHire.add("Temp Billable");
+            typeOfHire.add("Temp Non-Billable");
+            typeOfHire.add("Billable");
+            typeOfHire.add("Non-Billable");
+
+            return typeOfHire;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active Contractor Type of Hire");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String typeOfHire= identity.getAttribute("typeOfHire");
+
+          logger.debug("Type of Hire===>"+typeOfHire);
+
+          if(typeOfHire!=null)
+          {
+          return typeOfHire;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Project" dynamic="true" name="projectNumber" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active Contractor Type of Hire");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username").getValue();
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String pn = identity.getAttribute("projectNumber");
+
+          logger.debug("Project Number ===>"+pn);
+
+          if(pn!=null)
+          {
+          return pn;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" dependencies="username" displayName="Report To Manager" dynamic="true" filterString="inactive i== false   &amp;&amp; type i== &quot;employee&quot; &amp;&amp; links.application.name i== &quot;Active Directory&quot;" name="manager" type="sailpoint.object.Identity">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Report To Manager");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          logger.debug("username"+ username);
+
+          if(username!=null)
+          {
+
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+
+          logger.debug("Identity Name"+ identity.getName());
+
+          if(identity!=null && identity.getManager()!=null)
+          {
+          logger.debug("Identity mangaer "+ identity.getManager());
+          return identity.getManager().getId();
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" dependencies="username" displayName="Project Manager" dynamic="true" filterString="inactive i== false   &amp;&amp; type i== &quot;employee&quot;" name="projectmanager" type="sailpoint.object.Identity">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Report To Manager");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          logger.debug("username"+ username);
+
+          if(username!=null)
+          {
+
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+
+          logger.debug("Identity Name"+ identity.getName());
+
+          if(identity!=null)
+          {
+          Identity projectmanager;
+          if(identity.getAttribute("projectManager") != null) {
+
+          if(identity.getAttribute("projectManager") instanceof Identity) {
+          projectmanager = (Identity) identity.getAttribute("projectManager");
+          } else {
+          projectmanager = context.getObjectByName(Identity.class, identity.getAttribute("projectManager"));
+          }
+          }		
+
+          if(projectmanager!=null)
+          {
+          logger.debug("project  mangaer "+ projectmanager.getName());
+          return projectmanager.getId();
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" dependencies="username" displayName="Account Manager" dynamic="true" filterString="inactive i== false   &amp;&amp; type i== &quot;employee&quot;" name="accountManager" type="sailpoint.object.Identity">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Report To Manager");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          logger.debug("username"+ username);
+
+          if(username!=null)
+          {
+
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+
+          logger.debug("Identity Name"+ identity.getName());
+
+          if(identity!=null)
+          {
+          Identity accountManager;
+          if(identity.getAttribute("accountManager") != null) {
+
+          if(identity.getAttribute("accountManager") instanceof Identity) {
+          accountManager = (Identity) identity.getAttribute("accountManager");
+          } else {
+          accountManager = context.getObjectByName(Identity.class, identity.getAttribute("accountManager"));
+          }
+          }		
+
+          if(accountManager!=null)
+          {
+          logger.debug("account  mangaer "+ accountManager.getName());
+          return accountManager.getId();
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Extended By" name="extendedBy" readOnly="true" required="true" type="string"/>
+    <Field columnSpan="1" displayName="Contract End Date" dynamic="true" name="ContractEndDate" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active contractor Contract End Date");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String contractEndDate = identity.getAttribute("contractEndDate");
+
+          logger.debug("contractEndDate===>"+contractEndDate);
+
+          if(contractEndDate!=null)
+          {     
+          return contractEndDate;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Set Account Expires to" name="accountExpires" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+            List myValues = new ArrayList();
+            myValues.add("Date");
+            myValues.add("Never");
+
+            return myValues;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" displayName="New Contractor End Date" name="contractExtendDate" postBack="true" required="true" type="date">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[String accexpire = form.getField("accountExpires").getValue();
+
+                  if (accexpire != null && accexpire.equalsIgnoreCase("Date")){
+                  return false;
+
+                  }
+                  return true;]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[
+          import sailpoint.tools.Message;  
+          import java.text.DateFormat;
+          import java.text.SimpleDateFormat;
+          import java.util.Calendar;
+          import java.util.Date;
+          import java.lang.Math;
+          import sailpoint.tools.Util;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          // Expect: java.util.Date value
+          Logger logger = Logger.getLogger("Active contractor New Contractor End Date");
+          logger.setLevel(Level.ALL);
+          List messages = new ArrayList();
+
+
+          String contractEndDate = form.getField("ContractEndDate").getValue();
+
+          Date endDate = null;
+          
+          //Skip  90 days validation for Tradehelm entity
+          String entity = form.getField("entity").getValue();
+          
+          if(!sailpoint.tools.Util.isNullOrEmpty(contractEndDate) && !(contractEndDate.equalsIgnoreCase("never"))){
+          	try{
+          		endDate = sailpoint.tools.Util.stringToDate(contractEndDate);
+          	}
+          	catch(java.text.ParseException e){
+          		if(logger.isDebugEnabled())
+          		{
+          			logger.debug("Inside outer catch Not able to parse the end date..");
+          		}
+          		String ed = contractEndDate.split(" ")[0];
+          		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+          		try{
+          			endDate = sdf.parse(ed);
+          			if(logger.isDebugEnabled())
+          			{
+          				logger.debug("Inside Inner Try end date contains ");
+          			}
+          		}catch(java.text.ParseException pe){
+ 	         			endDate = null;
+          		}
+          	}
+          }
+
+          if(null!=value)
+          {
+          	logger.debug("contractEndDate==>"+contractEndDate);
+          	logger.debug("value ==>"+value);
+          	Calendar cal = Calendar.getInstance();
+          	cal.setTime(value);
+          	Calendar oyo = Calendar.getInstance();
+          	oyo.add(Calendar.MONTH, 3);
+          	//check new contractor end not be more than 90 days
+          	
+          	if(!(sailpoint.tools.Util.isDateAfterToday(value))&& sailpoint.tools.Util.isNotNullOrEmpty(entity) && !(entity.equalsIgnoreCase("TradeHelm")))
+          	{
+          		if ( value.after(oyo.getTime()) ) 
+          		{
+          			Message msg = new Message();
+          			msg.setKey("Please enter below 90 days from Todays date");
+          			messages.add(msg);
+          			return messages;
+          		}
+          	}                     
+          }
+          
+          //check new end date not appear in the past
+          if((sailpoint.tools.Util.isDateAfterToday(value)))
+          {
+          	Message msg = new Message();
+          	msg.setKey("Date must occur in the future");
+          	messages.add(msg);
+          	return messages;
+          }
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+    <Field columnSpan="1" displayName="Type of Device" dynamic="true" name="deviceType" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Active contractor Device Type");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("username") != null ? form.getField("username").getValue() :null;
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String deviceType = identity.getAttribute("deviceType");
+
+          logger.debug("deviceType===>"+deviceType);
+
+          if(deviceType!=null)
+          {     
+          return deviceType;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Indicate the reason for the extension of this contractor" displayType="textarea" name="extendInformation">
+      <Attributes>
+        <Map>
+          <entry key="height" value="150"/>
+          <entry key="width" value="200"/>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          import java.util.regex.Matcher; 
+          import java.util.regex.Pattern;
+          import sailpoint.tools.Message;
+
+          // Expect: java.lang.String value
+
+          Logger logger = Logger.getLogger("Highmetric Contractor Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+          logger.debug("Additional Information Comments");
+          String addComments = value;  
+
+          List messages = new ArrayList();
+
+          if(addComments!=null)
+          {
+          Pattern p = Pattern.compile("[a-zA-Z0-9_+&amp;.*\\- ]+");
+          Matcher mat = p.matcher(addComments); 
+          logger.debug("addComments->"+ mat); 
+
+          if (!mat.matches()) 
+          {
+          Message msg = new Message();
+          msg.setKey("Please do not use any Special Character");
+          messages.add(msg);
+          logger.debug("inside messages");
+          return messages.toString();         
+          }
+          }
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+  </Section>
+  <Button action="cancel" label="nav_cancel"/>
+  <Button action="next" label="Submit"/>
+</Form>

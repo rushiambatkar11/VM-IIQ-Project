@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-Delete-Identities">
+  <Description>
+    A rule which will call the workflow for the deletion and getting all the inactive users which will get deleted from AD and Sailpoint.
+  </Description>
+  <Source><![CDATA[
+  import sailpoint.object.Identity;
+  import sailpoint.object.Filter;
+  import sailpoint.object.QueryOptions;
+  import sailpoint.object.Attributes;
+  import java.text.DateFormat;
+  import java.text.SimpleDateFormat;
+  import sailpoint.object.Identity;
+  import java.util.List;
+  import sailpoint.object.Workflow;
+  import sailpoint.object.Identity;
+  import sailpoint.object.Request;
+  import sailpoint.object.RequestDefinition;
+  import sailpoint.object.Attributes;
+  import sailpoint.workflow.StandardWorkflowHandler;
+  import sailpoint.api.RequestManager;
+  import sailpoint.object.WorkflowLaunch;
+  import sailpoint.workflow.WorkflowContext;
+  import sailpoint.api.Workflower;
+  import org.apache.log4j.Logger;
+  import org.apache.log4j.Level;
+
+
+  Logger logger = Logger.getLogger("Test-Rushi-Rule-Delete-Identities");
+  logger.setLevel(Level.DEBUG);
+
+  int difference =0;
+  Date terminationDate =null;
+
+ // String workflowName =("Highmetric-Workflow-Identity-Deletion");
+  HashMap launchArgsMap = null;
+
+
+  logger.debug("Workflow name ==>"+workflowName);
+
+  // calculate the current date 
+  Date currentDate = new Date();
+
+
+  QueryOptions Opts = new QueryOptions();
+  Opts.addFilter(Filter.eq("inactive",true));
+
+  // list out all the disabled identities
+  List list =context.getObjects(Identity.class,Opts);      
+
+  logger.debug("getting list of users : "+list.size());
+
+
+  for( Identity identity:list)
+  {
+    String tDate = identity.getAttribute("terminationDate");
+    logger.debug("Termination Date :"+tDate);
+
+
+    if(tDate!=null && sailpoint.tools.Util.isNotNullOrEmpty(tDate) && !tDate.equalsIgnoreCase("never") )
+    {
+
+      String endDate = tDate.split(" ")[0];
+      terminationDate = new SimpleDateFormat("MM/dd/yyyy").parse(endDate);
+
+
+      // calculate the difference between current Date and terminationDate 	
+      difference = sailpoint.tools.Util.getDaysDifference(currentDate,terminationDate);
+
+      logger.debug("difference between endate date and current date "+difference);
+
+      logger.debug("identityName ==>"+identity.getName());
+
+
+      // if difference 90 days calculate the deletion Workflow
+      if(difference==140)
+      {
+        String identityName=identity.getName();
+        String type=identity.getAttribute("type");
+
+        logger.debug("IdentityName==>"+identityName);
+        logger.debug("type==>"+type);
+
+        // assigned workflow launch argument 
+        launchArgsMap = new HashMap();
+
+        if(sailpoint.tools.Util.isNotNullOrEmpty(type) && identityName!=null)
+        {
+          launchArgsMap.put("identityName", identityName);
+
+          if(type.equalsIgnoreCase("Contractor"))
+          {
+            launchArgsMap.put("flow","Contractor Deletion");
+            launchArgsMap.put("type",type);
+            launchArgsMap.put("authApp","Contractor HR");
+          }
+          else if(type.equalsIgnoreCase("Employee"))
+          {
+            launchArgsMap.put("flow","Employee Deletion");
+            launchArgsMap.put("type",type);
+            launchArgsMap.put("authApp","Employee HR");
+          }
+        }
+
+
+     /*
+        WorkflowLaunch wflaunch = new WorkflowLaunch();
+
+        Workflow wf = (Workflow)context.getObjectByName(Workflow.class, workflowName);
+
+
+        if(wf!=null)
+        {
+
+          wflaunch.setWorkflowName(wf.getName());
+
+          wflaunch.setWorkflowRef(wf.getName());
+
+          wflaunch.setCaseName(workflowName+" : "+identityName);
+
+          wflaunch.setVariables(launchArgsMap);
+
+          Workflower workflower = new Workflower(context);
+
+          // launch the workflow
+          WorkflowLaunch launch = workflower.launch(wflaunch);
+          logger.debug("Workflow launched=>"+launch.getStatus());
+        }
+        
+        */
+      }
+    }
+  }
+  ]]></Source>
+</Rule>

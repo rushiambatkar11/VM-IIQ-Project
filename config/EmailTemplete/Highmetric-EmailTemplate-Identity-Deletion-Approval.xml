@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="Highmetric-EmailTemplate-Identity-Deletion-Approval">
+  <Body>
+    &lt;html&gt;
+    &lt;body style="background:#FFF;margin:0;padding:0;text-align:left;"&gt;
+    &lt;table cellpadding="0" cellspacing="0" width="588" border="0" align="center" style="margin:0 auto;padding:0;"&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td height="20"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+    &lt;!-- CHANGE IMAGE SRC TO CLIENT LOGO --&gt;
+    &lt;td align="right" width="295" height="79"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;!-- /CLIENT LOGO --&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td height="7"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td&gt;
+    &lt;!-- EMAILER CONTENT BEGINS --&gt;
+    &lt;!-- HEADER --&gt;
+    &lt;!-- CHANGE BACKGROUND COLOR IN STYLE BELOW: blue - #0987a0 ; tan - #847f5c --&gt;
+    &lt;table cellpadding="0" cellspacing="0" width="500" style="background:#0987a0;margin:0;padding:0;text-align:left;border-bottom:5px solid #e4e4e4;"&gt;
+    &lt;tr valign="middle"&gt;
+    &lt;td width="30" height="85"&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+    &lt;td&gt;
+    &lt;!-- CHANGE COLOR STYLE BELOW: blue - #98bec6 ; tan - #b5b192 --&gt;
+    &lt;h2 style="color:#98bec6;margin:0;padding:0;font:bold 11pt Arial;text-transform:uppercase;"&gt;$identity.getType() Approval Deletion Notification For&lt;/h2&gt;
+    &lt;h1 style="color:#fff;margin:0;padding:0;font:bold 20pt Arial;"&gt;$identity.getDisplayName()&lt;/h1&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;!-- /HEADER --&gt;
+    &lt;!-- CONTENT --&gt;
+    &lt;table cellpadding="0" cellspacing="0" width="500" style="background:#fff;margin:0;padding:0;text-align:left;border-left:4px solid #ccc;border-right:4px solid #ccc;"&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td colspan="3" height="30"&gt;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td width="30"&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+    &lt;td&gt;
+    &lt;table cellpadding="0" cellspacing="0" width="100%" border="0"&gt;
+    &lt;tr valign="top"&gt;
+    &lt;td&gt;
+    &lt;!-- Use owner.displayableName as of release 6.3 the owner is available to use in bulk reassignemnt templates --&gt;
+    &lt;p style="margin:20px 0 0;padding:0;color:#333;font:bold 12pt Times New Roman;line-height:15pt;"&gt;Hello Team,&lt;/p&gt;
+    &lt;br/&gt;
+    Please approve the identity deletion process for below user.&lt;br&gt;&lt;/br&gt;
+    Login: $!identity.name &lt;br&gt;
+    Name: $!identity.firstname $!identity.lastname  &lt;br&gt;
+    Department : $!identity.getAttribute("department")&lt;br&gt;
+    Email   : $!identity.getAttribute("email")&lt;br&gt;
+    Job Title   : $!identity.getAttribute("jobTitle")&lt;br&gt;
+    User Type: $!identity.getAttribute("type")&lt;br&gt;
+     &lt;br&gt;
+       &lt;br/&gt;
+    Please click on the below link for Approve or Deny the identity deletion process.&lt;br&gt;&lt;/br&gt;
+     &lt;a href="http://seri.sailpointdemo.com:8080/identityiq/workitem/commonWorkItem.jsf#/commonWorkItem/$item.getId()"&gt;
+    Identity Deletion Approval Form
+    &lt;/a&gt; 
+    &lt;br&gt;
+    &lt;br&gt;&lt;/br&gt;
+    &lt;br&gt;
+    Requestors: User Account Will be Delete from Active Directory and Identity IQ. Please ensure the account is deleted from any other applications as necessary.&lt;br&gt;
+    &lt;br&gt;&lt;/br&gt;
+    &lt;p style="margin:0;padding:0;color:#333;font:normal 12pt Times New Roman;line-height:10pt;"&gt;Thank You,&lt;/p&gt;
+    &lt;br /&gt;
+    &lt;p style="margin:0 0 20px;padding:0;color:#333;font:bold 12pt Times New Roman;line-height:10pt;"&gt;Your Identity Management Solution&lt;/p&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;/td&gt;
+    &lt;td width="10"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;!-- /CONTENT --&gt;    
+    &lt;!-- FOOTER --&gt;
+    &lt;!-- CHANGE BACKGROUND COLOR IN STYLE BELOW: blue - #0987a0 ; tan - #847f5c --&gt;
+    &lt;table cellpading="0" cellspacing="0" width="500" style="background:#0987a0;margin:0;padding:0;text-align:right;border-top:5px solid #e4e4e4;"&gt;
+    &lt;tr valign="middle"&gt;
+    &lt;td height="60"&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;!-- /FOOTER --&gt;
+    &lt;!-- /EMAILER --&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+  </Body>
+  <Description>
+  Email Template for notifying IT Administrator about the approval.
+  </Description>
+  <Signature>
+    <Inputs>
+      <Argument name="identity">
+        <Description>The type of the Identity.</Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Subject>$identity.getAttribute("type").toUpperCase() - Account Deletion Approval For : $identity.getDisplayName()</Subject>
+</EmailTemplate>

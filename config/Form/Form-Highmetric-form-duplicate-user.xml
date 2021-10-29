@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Form name="Highmetric-Form-Duplicate-User" type="Workflow">
+  <Description>Duplicate identities</Description>
+  <Section name="My Image Section" type="text">
+    <Field>
+      <Script>
+        <Source><![CDATA[
+          import java.lang.String;
+          import java.lang.StringBuilder;
+          StringBuilder sb = new StringBuilder();
+          sb.append("<style>");
+          sb.append("#table1 {");
+          sb.append("font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;");
+          sb.append("width: 100%; }");
+          sb.append("#stop {");
+          sb.append("width='10%;'");
+          sb.append("padding-top: 2px;");
+          sb.append("padding-bottom: 2px;");
+          sb.append("text-align: center; }");
+          sb.append("</style>");
+          sb.append("<table cellpadding='0' cellspacing='0' width='100%' border='0' align='center' style='margin:0 auto;padding:0;'>");
+          sb.append("<td width='90%'>");
+          sb.append("<p style='margin:0 0 10px;padding-top:20px;color:#ff0000;font:normal 20pt Arial;line-height:15pt;text-align:left;padding-right:10px;'> Duplicate User Found");
+          sb.append("</p>");
+          sb.append("<p> One or more duplicate identitie(s) found in SailPoint for the given firstname and lastname.");
+          sb.append("</p>");
+          sb.append("</td></tr>");
+          sb.append("</table>");      
+          return sb.toString(); 
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section name="duplicateIdentity">
+    <Field displayName="Duplicate User(s)" displayType="combobox" dynamic="true" name="dupIdentity" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+            if(duplicateIdentityList!=null)
+            {
+            return duplicateIdentityList;
+            }
+
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import java.util.List;
+
+
+          Logger logger = Logger.getLogger("Highmetric-Form-Duplicate : ");
+          logger.setLevel(Level.DEBUG);
+
+
+          logger.debug("listDupIdentities===>"+duplicateIdentityList);
+
+          Object obj = duplicateIdentityList;
+          String fistIdentity ="";
+
+          if(obj instanceof List)
+          {
+
+          ArrayList al = (ArrayList) obj;
+
+          if(al!=null && null!=al.get(0))
+          {
+
+          fistIdentity = (String) al.get(0);
+          }
+          }
+
+          logger.debug("fistIdentity===>"+fistIdentity);
+
+          if(fistIdentity !=null && sailpoint.tools.Util.isNotNullOrEmpty(fistIdentity))
+          {
+          return fistIdentity;
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section columns="3" label="Duplicate User Information" name="dupIdentityInfo">
+    <Field columnSpan="1" displayName="Username" dynamic="true" name="username" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+          return username;
+          }
+
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="First Name" dynamic="true" name="firstname" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+          return identiy.getFirstname();
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Last Name" dynamic="true" name="lastname" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+          return identiy.getLastname();
+          }     
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Report To Manager" dynamic="true" name="manager" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+          if(identiy!=null && identiy.getManager()!=null)
+          {
+
+          String manager = (String) identiy.getManager().getDisplayName();
+
+          if(manager !=null && sailpoint.tools.Util.isNotNullOrEmpty(manager))
+          {
+          return manager;
+          } 
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Project Manager" dynamic="true" name="projManager" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+                  if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,username);
+
+                  if(identiy.getAttribute("type")!=null)
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Employee"))
+                  {
+                  return true;
+                  }
+
+                  }
+
+                  }
+                  return false;
+
+
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+          if(identiy!=null && identiy.getAttribute("projectManager")!=null)
+          {
+
+          Identity  projManager = identiy.getAttribute("projectManager");
+
+          if(projManager!=null)
+          {
+          return(String) projManager.getDisplayName();
+
+          } 
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Account Manager" dynamic="true" name="accManager" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+                  if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,username);
+
+                  if(identiy.getAttribute("type")!=null)
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Employee"))
+                  {
+                  return true;
+                  }
+
+                  }
+
+                  }
+                  return false;
+
+
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Contractor First Name");
+          logger.setLevel(Level.DEBUG);
+
+
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+          if(identiy!=null && identiy.getAttribute("accountManager")!=null)
+          {
+
+          Identity  accManager = identiy.getAttribute("accountManager");
+
+          if(accManager!=null)
+          {
+          return(String) accManager.getDisplayName();
+
+          } 
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Entity" dynamic="true" name="entity" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("entity")!=null)
+          {
+          String entity = (String) identiy.getAttribute("entity");
+
+          if(entity !=null && sailpoint.tools.Util.isNotNullOrEmpty(entity))
+          {
+
+          return entity;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Entity Email" dynamic="true" name="entity" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getEmail()!=null && sailpoint.tools.Util.isNotNullOrEmpty(identiy.getEmail()))
+          {
+          return  identiy.getEmail();
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Type" dynamic="true" name="type" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("type")!=null)
+          {
+          String typeValue = (String) identiy.getAttribute("type");
+
+          if(typeValue !=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue))
+          {
+
+          return typeValue;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Type Of Hire" dynamic="true" name="typeOfHire" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("typeOfHire")!=null)
+          {
+          String typeOfHire = (String) identiy.getAttribute("typeOfHire");
+
+          if(typeOfHire !=null && sailpoint.tools.Util.isNotNullOrEmpty(typeOfHire))
+          {
+
+          return typeOfHire;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Device Type" dynamic="true" name="deviceType" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+                  if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,username);
+
+                  if(identiy.getAttribute("type")!=null)
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Employee"))
+                  {
+                  return true;
+                  }
+                  }
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("deviceType")!=null)
+          {
+          String deviceType = (String) identiy.getAttribute("deviceType");
+
+          if(deviceType !=null && sailpoint.tools.Util.isNotNullOrEmpty(deviceType))
+          {
+
+          return deviceType;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Department" dynamic="true" name="depatment" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("department")!=null)
+          {
+          String department = (String) identiy.getAttribute("department");
+
+          if(department !=null && sailpoint.tools.Util.isNotNullOrEmpty(department))
+          {
+
+          return department;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Sub Deparment" dynamic="true" name="subDepartment" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+                  if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,username);
+
+                  if(identiy.getAttribute("type")!=null)
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Contractor"))
+                  {
+                  return true;
+                  }
+
+                  }
+
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("subDepartment")!=null)
+          {
+          String subDepartment = (String) identiy.getAttribute("subDepartment");
+
+          if(subDepartment !=null && sailpoint.tools.Util.isNotNullOrEmpty(subDepartment))
+          {
+
+          return subDepartment;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Job Title" dynamic="true" name="jobTitle" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+                  if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,username);
+
+                  if(identiy.getAttribute("type")!=null)
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Contractor"))
+                  {
+                  return true;
+                  }
+
+                  }
+
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+          if(identiy.getAttribute("jobTitle")!=null)
+          {
+          String jobTitle = (String) identiy.getAttribute("jobTitle");
+
+          if(jobTitle !=null && sailpoint.tools.Util.isNotNullOrEmpty(jobTitle))
+          {
+
+          return jobTitle;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Start Date" dynamic="true" name="StartDate" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("contractStartDate")!=null)
+          {
+          String startDate = (String) identiy.getAttribute("contractStartDate");
+
+          if(startDate !=null && sailpoint.tools.Util.isNotNullOrEmpty(startDate))
+          {
+
+          return startDate;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Country" dynamic="true" name="country" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("country")!=null)
+          {
+          String country = (String) identiy.getAttribute("country");
+
+          if(country !=null && sailpoint.tools.Util.isNotNullOrEmpty(country))
+          {
+
+          return country;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Office Location" dynamic="true" name="officeLocation" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("officeLocation")!=null)
+          {
+          String officeLocation = (String) identiy.getAttribute("officeLocation");
+
+          if(officeLocation !=null && sailpoint.tools.Util.isNotNullOrEmpty(officeLocation))
+          {
+
+          return country;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Address" dynamic="true" name="address" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("address")!=null)
+          {
+          String address = (String) identiy.getAttribute("address");
+
+          if(address !=null && sailpoint.tools.Util.isNotNullOrEmpty(address))
+          {
+
+          return address;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Primary Phone" dynamic="true" name="primaryPhone" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,username);
+
+
+
+          if(identiy.getAttribute("primaryPhone")!=null)
+          {
+          String primaryPhone = (String) identiy.getAttribute("primaryPhone");
+
+          if(primaryPhone !=null && sailpoint.tools.Util.isNotNullOrEmpty(primaryPhone))
+          {
+
+          return primaryPhone;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Practice Line" dynamic="true" name="practiceLine" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          String username = form.getField("dupIdentity") != null ? form.getField("dupIdentity").getValue() :null;
+
+          if(username !=null && sailpoint.tools.Util.isNotNullOrEmpty(username))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,username);
+                   
+          if(identiy.getAttribute("practiceLine")!=null)
+          {
+          String practiceLine = (String) identiy.getAttribute("practiceLine");
+
+          if(practiceLine !=null && sailpoint.tools.Util.isNotNullOrEmpty(practiceLine))
+          {
+
+          return practiceLine;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Button action="next" label="Countinue Onboarding"/>
+  <Button action="back" label="Go Back" parameter="backButton" value="previous"/>
+  <Button action="cancel" label="Exit Onboarding"/>
+</Form>

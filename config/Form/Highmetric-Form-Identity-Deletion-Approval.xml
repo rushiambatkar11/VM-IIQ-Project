@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Form name="Highmetric-Form-Identity-Deletion-Approval" type="Workflow">
+  <Section name="My Image Section" type="text">
+    <Field>
+      <Script>
+        <Source><![CDATA[
+          import java.lang.String;
+          import java.lang.StringBuilder;
+          StringBuilder sb = new StringBuilder();
+          sb.append("<style>");
+          sb.append("#table1 {");
+          sb.append("font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;");
+          sb.append("width: 100%; }");
+          sb.append("#stop {");
+          sb.append("width='10%;'");
+          sb.append("padding-top: 2px;");
+          sb.append("padding-bottom: 2px;");
+          sb.append("text-align: center; }");
+          sb.append("</style>");
+          sb.append("<table cellpadding='0' cellspacing='0' width='100%' border='0' align='center' style='margin:0 auto;padding:0;'>");
+          sb.append("<td width='90%'>");
+          sb.append("<p style='margin:0 0 10px;padding-top:20px;color:#649825;font:normal 20pt Arial;line-height:15pt;text-align:left;padding-right:10px;'> Identity Deletion Approval Form");
+          sb.append("</p>");
+          sb.append("</td></tr>");
+          sb.append("</table>");
+          return sb.toString(); 
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section columns="3" label="User Information" name="deleteIdentityInfo">
+    <Field displayName="Username" name="identityName" readOnly="true" type="string"/>
+    <Field columnSpan="1" displayName="First Name" name="firstname" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+          if(identityName!=null && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null != identiy.getFirstname())
+          {
+          return (String)identiy.getFirstname();
+          }
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Last Name" name="lastname" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+          if(null!=identityName && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null != identiy.getLastname())
+          {
+          return (String)identiy.getLastname();
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Email" name="email" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+          if(null!=identityName && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identity = context.getObjectByName(Identity.class,identityName);
+          if(null!=identity.getEmail())
+          {
+          return (String)identity.getEmail();
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Entity" name="entity" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+          if(null!=identityName && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identity = context.getObjectByName(Identity.class, identityName);
+
+          if(null!=identity.getAttribute("entity"))
+          {
+          return (String)identity.getAttribute("entity");
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="User Type" dynamic="true" name="type" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+          if(null!=identityName && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identity = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identity.getAttribute("type"))
+          {
+          return (String)identity.getAttribute("type");
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Report To Manager" name="manager" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Identity Deletion Approval");
+          logger.setLevel(Level.DEBUG);
+
+
+          if(identityName !=null && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          logger.debug("identityName===>"+identityName);
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy && null!=identiy.getManager())
+          {
+          logger.debug("Manager===>"+identiy.getManager());
+
+          Identity  manager =  identiy.getManager();
+
+          if(null!=manager && null != manager.getDisplayName())
+          {
+          return manager.getDisplayName();
+          } 
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Device Type" name="deviceType" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+                  if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+                  if(null!=identiy.getAttribute("type"))
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(null!=typeValue && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Employee"))
+                  {
+                  return true;
+                  }
+                  }
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+
+
+          if(null!=identiy.getAttribute("deviceType"))
+          {
+          String deviceType = (String) identiy.getAttribute("deviceType");
+
+          if(null!=deviceType && sailpoint.tools.Util.isNotNullOrEmpty(deviceType))
+          {
+
+          return deviceType;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Department" dynamic="true" name="depatment" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("department"))
+          {
+          String department = (String) identiy.getAttribute("department");
+
+          if(null!= department && sailpoint.tools.Util.isNotNullOrEmpty(department))
+          {
+          return department;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Sub Deparment" dynamic="true" name="subDepartment" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+
+                  if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+                  {
+
+                  Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+                  if(null!=identiy.getAttribute("type"))
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(typeValue!=null && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Contractor"))
+                  {
+                  return true;
+                  }
+
+                  }
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("subDepartment"))
+          {
+          String subDepartment = (String) identiy.getAttribute("subDepartment");
+
+          if(null!=subDepartment && sailpoint.tools.Util.isNotNullOrEmpty(subDepartment))
+          {
+          return subDepartment;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Job Title" dynamic="true" name="jobTitle" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import sailpoint.object.Identity;
+
+
+                  if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+                  {
+                  Identity identiy = context.getObjectByName(Identity.class,identityName);
+                  if(null!=identiy.getAttribute("type"))
+                  {
+                  String typeValue = (String) identiy.getAttribute("type");
+
+                  if(null!=typeValue && sailpoint.tools.Util.isNotNullOrEmpty(typeValue) && typeValue.equalsIgnoreCase("Contractor"))
+                  {
+                  return true;
+                  }
+                  }
+                  }
+                  return false;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("jobTitle"))
+          {
+          String jobTitle = (String) identiy.getAttribute("jobTitle");
+
+          if(null!=jobTitle && sailpoint.tools.Util.isNotNullOrEmpty(jobTitle))
+          {
+          return jobTitle;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Country" name="country" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("country"))
+          {
+          String country = (String) identiy.getAttribute("country");
+
+          if(null!=country && sailpoint.tools.Util.isNotNullOrEmpty(country))
+          {
+
+          return country;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Office Location" name="officeLocation" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("officeLocation"))
+          {
+          String officeLocation = (String) identiy.getAttribute("officeLocation");
+
+          if(null!=officeLocation && sailpoint.tools.Util.isNotNullOrEmpty(officeLocation))
+          {
+          return country;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Address" name="address" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null!=identiy.getAttribute("address"))
+          {
+          String address = (String) identiy.getAttribute("address");
+
+          if(null!=address && sailpoint.tools.Util.isNotNullOrEmpty(address))
+          {
+          return address;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Primary Phone" name="primaryPhone" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+
+
+          if(null!=identiy.getAttribute("primaryPhone"))
+          {
+          String primaryPhone = (String) identiy.getAttribute("primaryPhone");
+
+          if(null != primaryPhone && sailpoint.tools.Util.isNotNullOrEmpty(primaryPhone))
+          {
+
+          return primaryPhone;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Practice Line" name="practiceLine" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+
+          if(null != identiy.getAttribute("practiceLine"))
+          {
+          String practiceLine = (String) identiy.getAttribute("practiceLine");
+
+          if(null!=practiceLine && sailpoint.tools.Util.isNotNullOrEmpty(practiceLine))
+          {
+
+          return practiceLine;
+          }
+
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="Start Date" name="StartDate" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+          if(null!=identiy.getAttribute("contractStartDate"))
+          {
+          String startDate = (String) identiy.getAttribute("contractStartDate");
+
+          if(null !=startDate && sailpoint.tools.Util.isNotNullOrEmpty(startDate))
+          {
+
+          return startDate;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field displayName="End Date" name="endDate" readOnly="true" type="string">
+      <Script>
+        <Source><![CDATA[     
+          import sailpoint.object.Identity;
+
+          if(null!=identityName  && sailpoint.tools.Util.isNotNullOrEmpty(identityName))
+          {
+          Identity identiy = context.getObjectByName(Identity.class,identityName);
+          if(null!=identiy.getAttribute("contractStartDate"))
+          {
+          String terminationDate = (String) identiy.getAttribute("terminationDate");
+
+          if(null !=terminationDate && sailpoint.tools.Util.isNotNullOrEmpty(terminationDate))
+          {
+          return terminationDate;
+          }
+          }
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section label="Approve Identity Deletion" name="approveDeleteIdentity">
+    <Field displayName="Do you want to delete this identity" displayType="radio" name="deleteIdentity" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Approve</String>
+            <String>Deny</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" displayName="Retain Date" name="retainAccount" postBack="true" required="true" type="date">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+
+                  import org.apache.log4j.Logger;
+                  import org.apache.log4j.Level;
+
+                  Logger logger = Logger.getLogger("Identity Deletion Approval");
+                  logger.setLevel(Level.ALL);
+
+                  String deleteIdentity = form.getField("deleteIdentity").getValue();
+
+                  logger.debug("deleteIdentity==>"+deleteIdentity);
+
+                  if (null != deleteIdentity && sailpoint.tools.Util.isNotNullOrEmpty(deleteIdentity) && deleteIdentity.equalsIgnoreCase("Deny")){
+                  return false;
+                  }
+                  return true;]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[
+          import sailpoint.tools.Message;  
+          import sailpoint.tools.Util;
+          import java.util.List;
+          import java.util.ArrayList;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          // Expect: java.util.Date value
+
+          Logger logger = Logger.getLogger("Retain Date Execute");
+          logger.setLevel(Level.ALL);
+          List messages = new ArrayList();
+
+
+          logger.debug("Retaintain date==>"+value);
+
+          logger.debug("Retaintain date isDateAfterToday==>"+(sailpoint.tools.Util.isDateAfterToday(value)));
+
+          //check retain date should be in future
+          if((sailpoint.tools.Util.isDateAfterToday(value)))
+          {
+          Message msg = new Message();
+          msg.setKey("Date must occur in the future");
+          messages.add(msg);
+          return messages;
+          }
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+  </Section>
+  <Button action="cancel" label="nav_cancel"/>
+  <Button action="next" label="Submit"/>
+</Form>

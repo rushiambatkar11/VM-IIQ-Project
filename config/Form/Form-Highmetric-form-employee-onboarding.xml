@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Form name="Highmetric-Form-Employee-Onboarding" type="Workflow">
+  <Attributes>
+    <Map>
+      <entry key="pageTitle" value="Highmetric-Form-Employee-Onboarding"/>
+    </Map>
+  </Attributes>
+  <Description>Form used for Employee On-boarding</Description>
+  <Section name="My Image Section" type="text">
+    <Field>
+      <Script>
+        <Source><![CDATA[
+          import java.lang.String;
+          import java.lang.StringBuilder;
+          StringBuilder sb = new StringBuilder();
+          sb.append("<style>");
+          sb.append("#table1 {");
+          sb.append("font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;");
+          sb.append("width: 100%; }");
+          sb.append("#stop {");
+          sb.append("width='10%;'");
+          sb.append("padding-top: 2px;");
+          sb.append("padding-bottom: 2px;");
+          sb.append("text-align: center; }");
+          sb.append("</style>");
+          sb.append("<table cellpadding='0' cellspacing='0' width='100%' border='0' align='center' style='margin:0 auto;padding:0;'>");
+          sb.append("<td width='90%'>");
+          sb.append("<p style='margin:0 0 10px;padding-top:20px;color:#649825;font:normal 20pt Arial;line-height:15pt;text-align:left;padding-right:10px;'> Employee On-boarding Form");
+          sb.append("</p>");
+          sb.append("</td></tr>");
+          sb.append("</table>");
+          return sb.toString(); 
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section columns="2" label="Organization Information" name="organizationInfo">
+    <Field columnSpan="1" displayName="User Type" name="userType" required="true" type="string" value="employee">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="1" displayName="Entity" displayType="combobox" name="entity" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+            Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+            logger.setLevel(Level.DEBUG);
+
+            List<String> companyList =null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-Company");
+
+            if (custom != null) {
+
+            companyList = custom.getList("Company");
+
+            logger.debug("Comapany name in the list"+companyList);
+
+            }
+
+            if(companyList!=null && !(sailpoint.tools.Util.isEmpty(companyList)))
+            {
+            Collections.sort(companyList);
+            return companyList;
+            }
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" displayName="Created Date" displayOnly="true" name="createdDate" required="true">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import java.text.SimpleDateFormat;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+          SimpleDateFormat sm = new SimpleDateFormat("MM/dd/YYYY");
+
+          String strDate = sm.format(new java.util.Date());
+
+          return strDate;
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Created By" dynamic="true" name="createdBy" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+    </Field>
+  </Section>
+  <Section columns="4" label="User Details" name="userDetails">
+    <Field columnSpan="4" displayName="Salutation" name="salutation" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Mr.</String>
+            <String>Ms.</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="2" displayName="First Name" name="firstname" postBack="true" required="true" type="string"/>
+    <Field columnSpan="2" displayName="Middle Name" name="middleName" postBack="true" type="string"/>
+    <Field columnSpan="2" displayName="Last Name" name="lastname" postBack="true" required="true" type="string"/>
+    <Field columnSpan="2" displayName="Manager" filterString="inactive i== false   &amp;&amp; type i== &quot;employee&quot; &amp;&amp; links.application.name i== &quot;Active Directory&quot;" name="manager" required="true" type="sailpoint.object.Identity">
+      <Script>
+        <Source><![CDATA[
+          import sailpoint.object.Identity;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+
+          logger.debug("inside Manager -->");
+
+          String identityName = form.getField("manager").getValue();
+
+          logger.debug("manager name ==>"+identityName);
+
+          if (identityName != null) {
+
+          Identity identity = context.getObject(Identity.class, identityName);
+
+          logger.debug("identity name"+identity.getName());
+
+
+          return identity.getName();
+          }
+
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Department" name="axDepartment" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+            import sailpoint.object.Custom; 
+            import sailpoint.object.Attributes;
+            import java.util.Collections;
+            import java.util.List;
+
+            Custom axDepartment = context.getObjectByName(Custom.class,"Highmetric-Custom-AX-Department");
+
+            if(axDepartment!=null)
+            {
+
+            Attributes attr = axDepartment.getAttributes();
+            if(attr!=null)
+            {
+            List depNames = attr.getKeys();
+            if(depNames!=null)
+            {
+            Collections.sort(depNames);
+            return depNames;
+            }
+            }
+            }
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="2" displayName="Job Title" displayType="combobox" postBack="true"  name="jobTitle" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+            Logger logger = Logger.getLogger("Highmetric Employee Onboarding :");
+            logger.setLevel(Level.DEBUG);
+
+            List<String> jobTitleList=null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-JobTitles");
+            logger.debug("inside jobTitle"+custom);
+            if (custom != null) {
+            jobTitleList = custom.getList("Job Title");
+            logger.debug("inside entity-->jobTitleList "+jobTitleList);
+            } 
+            if(jobTitleList!=null && !(sailpoint.tools.Util.isEmpty(jobTitleList)))
+            {
+            logger.debug("inside entity-->if 2");
+            Collections.sort(jobTitleList);
+            return jobTitleList;
+            }
+
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="2" displayName="Other Job Title" dynamic="true" name="otherJobTitle" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                 import org.apache.log4j.Logger;
+                 import org.apache.log4j.Level;
+                
+                 Logger logger = Logger.getLogger("Highmetric-Employee-Form otherJobTitle");
+                 logger.setLevel(Level.DEBUG);
+                     
+                  String jobtitle = form.getField("jobTitle").getValue();       
+                  logger.debug("jobtitle field==>"+jobtitle);
+                  if (jobtitle != null && jobtitle.equalsIgnoreCase("Other")){
+                  return false;
+
+                  }
+                  return true;]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="2" dependencies="firstname,lastname" displayName="User Name" displayOnly="true" dynamic="true" name="username" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import java.text.Normalizer;
+          import sailpoint.object.Identity;
+          import sailpoint.object.Filter;
+          import sailpoint.object.QueryOptions;
+          import sailpoint.api.PersistenceManager.Resolver;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding :");
+          logger.setLevel(Level.DEBUG);
+
+          /** remove special character for String  **/
+
+          public String removeSpecialCharacter(String str) {
+          str = str.replaceAll("[^a-zA-Z]", "").toLowerCase().trim();
+          str = str.replaceAll("[1-9]", "");
+          return str;
+          }
+
+          /** Limit lenght of String to 8  **/
+
+          public String limitCharacter(String str) {
+          if (str.length() > 8) {
+          return str.substring(0, 8);
+          }
+          else {
+          return str;
+          }
+          }
+
+          String username = "";
+
+          if (firstname != null && lastname != null) {
+          firstname = removeSpecialCharacter(firstname);
+          lastname = removeSpecialCharacter(lastname);
+          firstname = firstname.replaceAll("[0-9]", "");
+
+          username = firstname.charAt(0) + lastname;
+          String uniqueUsername = username;
+
+          uniqueUsername = limitCharacter(uniqueUsername);
+          logger.debug("Printing Username 111111 : " + uniqueUsername);
+
+          boolean flag = true;
+          boolean subflag = true;
+
+          int countObjects;
+          int count = -1;
+
+          int dynamicLength = 0;
+
+
+          while (flag) {                  
+          count++;
+          logger.debug("Printing count 22222 : " + count);
+
+          if(count > 0   && count < 10)      dynamicLength = 1;
+          if(count > 9   && count < 100)     dynamicLength = 2;
+          if(count > 99  && count < 1000)    dynamicLength = 3;
+          if(count > 999 && count < 10000)   dynamicLength = 4;
+
+          QueryOptions qo = new QueryOptions();
+          qo.addFilter(Filter.eq("name", uniqueUsername));
+          countObjects = context.countObjects(Identity.class, qo);
+          logger.debug("Printing countObjects 3333333 : " + countObjects);
+
+          if (countObjects == 0) {
+          flag=false; 
+          break;
+          }
+          if (countObjects > 0)
+          {
+          if (subflag){
+
+          if(lastname.length() >= 6 ){
+          uniqueUsername = firstname.substring(0, 2) + lastname.substring(0, 6);
+          logger.debug("Printing Username 4444444 : " + uniqueUsername);
+          }else{
+          uniqueUsername = firstname.substring(0, 2) + lastname.substring(0, lastname.length());
+          logger.debug("Printing Username 55555555 : " + uniqueUsername);
+          }
+          subflag = false;
+          }
+          else{
+
+          if(lastname.length() >= 7 ){
+          uniqueUsername = firstname.substring(0, 1) + lastname.substring(0, (7-dynamicLength)) + count;
+          logger.debug("Printing Username 666666 : " + uniqueUsername);
+          }
+          else{
+          if(1 + lastname.length() + dynamicLength <=8){
+          uniqueUsername = firstname.substring(0, 1) + lastname.substring(0, lastname.length()) + count;
+          logger.debug("Printing Username 77777777 : " + uniqueUsername);
+          }
+          else{
+          uniqueUsername = firstname.substring(0, 1) + lastname.substring(0, (lastname.length() - dynamicLength)) + count;
+          logger.debug("Printing Username 8888888 : " + uniqueUsername);
+          }
+          }
+          }
+          }
+          }
+          return uniqueUsername;
+          }
+
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Primary Domain" displayType="combobox" dynamic="true" name="domain" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+            Logger logger = Logger.getLogger("Active Contractor Entity");
+            logger.setLevel(Level.DEBUG);
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-Domain");
+            String company = form.getField("entity").getValue();
+
+            if (custom != null && company != null) {
+
+            List domainList  = custom.getList(company);
+
+            if(domainList != null) {
+            Collections.sort(domainList);
+            return domainList;
+            } else {
+            domainList = new ArrayList();
+            domainList.add("columnit.com");
+            domainList.add("highmetric.com");
+            Collections.sort(domainList);
+            return domainList;
+            }
+            }
+
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Script>
+        <Source><![CDATA[
+          import sailpoint.object.Custom;
+          import java.util.List;
+          import java.util.Collections;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);           
+
+          String company = form.getField("entity").getValue();
+
+          if (company != null) {       
+
+          if (company.equals("Column Technologies UK DBA Highmetric  UK LTD.")) {
+          return "columnit.com";
+          }
+          else if (company.equals("India Software Pvt. LTD"))
+          {
+          return "columnit.com";
+
+          } 
+          else if (company.equals("TradeHelm"))
+          {
+          return "highmetric.com";
+
+          }
+          else if (company.equals("Vorto"))
+          {
+          return "highmetric.com";
+
+          } 
+          else if (company.equals("Column Technologies LLC"))
+          {
+          return "columnit.com";
+
+          } 
+          else if (company.equals("Highmetric, LLC"))
+          {
+          return "highmetric.com";
+
+          } 
+          else if (company.equals("Column Technologies Canada INC."))
+          {
+          return "columnit.com";
+
+          }
+
+          }
+
+          return null;
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Entity Email" dynamic="true" name="entityEmail" postBack="true" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[       
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+
+          String domain = form.getField("domain").getValue();
+          String username = form.getField("username").getValue();
+          String email="";  
+
+          if (null != domain && null != username )
+          {
+          email = username + "@" + domain;
+
+          if(email!=null)
+          {
+          return email.toLowerCase();
+          }
+          }
+          return null;
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Start Date" name="startDate" postBack="true" required="true" type="date">
+      <ValidationScript>
+        <Source><![CDATA[
+          import sailpoint.tools.Message;
+          import java.util.Calendar;
+          import java.util.Date;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          // Expect: java.util.Date value
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+          List messages = new ArrayList();
+          Date date = new Date();
+
+          Calendar cal1 = Calendar.getInstance();
+          cal1.setTime(value);
+
+          Calendar cal2 = Calendar.getInstance();
+          cal2.add(Calendar.MONTH, 3);
+
+
+
+          if (!(sailpoint.tools.Util.isDateAfterToday(value))) {
+          if (value.after(cal2.getTime())) {
+          Message msg = new Message();
+          msg.setKey("Selected date must not be more than three month");
+          messages.add(msg);
+          return messages;
+          }
+          }
+
+          Calendar cal3 = Calendar.getInstance();  
+          cal3.setTime(date);
+          int difference = sailpoint.tools.Util.getDaysDifference(value, date);
+
+          if (!(difference> (-7))) {
+          Message msg = new Message();
+          msg.setKey("Allowed date not more than one week in past");
+          messages.add(msg);
+          return messages;
+          }
+          return null;
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+    <Field columnSpan="2" displayName="Orientation Date" hidden="true" name="orientationDate" type="date">
+      <ValidationScript>
+        <Source><![CDATA[
+          import sailpoint.tools.Message;
+          import java.text.DateFormat;
+          import java.text.SimpleDateFormat;
+          import java.util.Calendar;
+          import java.util.Date;
+          import sailpoint.tools.Util;
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          // Expect: java.util.Date value
+
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+
+
+          List messages = new ArrayList();
+          Date cstartdate = form.getField("startDate").getValue();
+
+          int difference = sailpoint.tools.Util.getDaysDifference(value, cstartdate);
+
+          if (!(difference> (-7))) {
+          Message msg = new Message();
+          msg.setKey("Orientation Date not more than one week in past from start date");
+          messages.add(msg);
+          return messages;
+          }
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+    <Field columnSpan="2" displayName="Travel Bonus" name="travelBonus" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Yes</String>
+            <String>No</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+    </Field>
+  </Section>
+  <Section columns="2" label="Contact Information" name="contactInformation">
+    <Field columnSpan="1" displayName="Home Address" displayType="combobox" name="homeaddress" postBack="true" required="true" type="string"/>
+    <Field columnSpan="1" displayName="Personal Email" name="personalemail" type="string"/>
+    <Field columnSpan="1" displayName="Primary Phone" name="primaryphone" required="true" type="string"/>
+    <Field columnSpan="1" displayName="Secondary Phone" displayType="combobox" name="secondaryphone" postBack="true" type="string"/>
+  </Section>
+  <Section columns="3" label="Location Details" name="location">
+    <Field columnSpan="3" displayName="Remote" displayType="radio button" name="remote" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Yes</String>
+            <String>No</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+      <Script>
+        <Source><![CDATA[
+          return "No";
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Country" displayType="combobox" name="country" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[ 
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            List<String> countryList=null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-Country");
+            if (custom != null) {
+            countryList = custom.getList("Country");
+            } 
+            if(countryList!=null && !(sailpoint.tools.Util.isEmpty(countryList)))
+            {
+            Collections.sort(countryList);
+            return countryList;
+            }
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" dependencies="country" displayName="Residential State" dynamic="true" name="residentialState" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+
+            import java.util.ArrayList;
+            import java.util.Collections;
+            import java.util.List;
+
+            import org.apache.log4j.Logger;
+
+
+            import sailpoint.api.SailPointContext;
+            import sailpoint.object.Custom;
+            import sailpoint.object.DynamicValue;
+            import sailpoint.object.Field;
+
+            import sailpoint.object.Form;
+            import sailpoint.object.Identity;
+
+            import sailpoint.tools.GeneralException;
+            String country=(String)form.getField("country").getValue();
+            String resState=(String)form.getField("residentialState").getValue();
+            Custom customStates = context.getObjectByName(Custom.class,"Highmetric-Custom-States");
+            List stateList =new ArrayList();
+            if(null!=customStates && null!=country)
+            {
+            stateList=customStates.getList(country);
+            Collections.sort(stateList);
+
+            if(null!=resState && null!=stateList && sailpoint.tools.Util.nullSafeContains(stateList, resState))
+            {
+            //do nothing
+
+            }
+            else if(null!=stateList && !sailpoint.tools.Util.isEmpty(stateList))
+            {
+            field.setValue(null);
+            DynamicValue dv = new DynamicValue();
+
+            dv.setValue(stateList);
+            field.setAllowedValuesDefinition(dv);
+
+            }
+
+
+
+            }
+
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" dependencies="country" displayName="Remote From State" dynamic="true" name="remoteFromState" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+
+
+            import java.util.ArrayList;
+            import java.util.Collections;
+            import java.util.List;
+
+            import org.apache.log4j.Logger;
+
+
+            import sailpoint.api.SailPointContext;
+            import sailpoint.object.Custom;
+            import sailpoint.object.DynamicValue;
+            import sailpoint.object.Field;
+
+            import sailpoint.object.Form;
+            import sailpoint.object.Identity;
+
+            import sailpoint.tools.GeneralException;
+            String country=(String)form.getField("country").getValue();
+            String resState=(String)form.getField("remoteFromState").getValue();
+            Custom customStates = context.getObjectByName(Custom.class,"Highmetric-Custom-States");
+            List stateList =new ArrayList();
+            if(null!=customStates && null!=country)
+            {
+            stateList=customStates.getList(country);
+            Collections.sort(stateList);
+
+            if(null!=resState && null!=stateList && sailpoint.tools.Util.nullSafeContains(stateList, resState))
+            {
+            //do nothing
+
+            }
+            else if(null!=stateList && !sailpoint.tools.Util.isEmpty(stateList))
+            {
+            field.setValue(null);
+            DynamicValue dv = new DynamicValue();
+
+            dv.setValue(stateList);
+            field.setAllowedValuesDefinition(dv);
+
+            }
+
+
+
+            }
+
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                  String remoteValue = form.getField("remote").getValue();
+
+                  if (remoteValue != null && remoteValue.equalsIgnoreCase("no")){
+                  return true;
+
+                  }
+                  return false;  ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="1" displayName="Remote To Country" name="remoteToCountry" postBack="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            List<String> remoteToCountryList=null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-Country");
+
+            if (custom != null) {
+            remoteToCountryList = custom.getList("Country");
+            } 
+            if(remoteToCountryList!=null && !(sailpoint.tools.Util.isEmpty(remoteToCountryList)))
+            {
+            Collections.sort(remoteToCountryList);
+            return remoteToCountryList;
+            }
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[String remoteValue = form.getField("remote").getValue();
+
+                  if (remoteValue != null && remoteValue.equalsIgnoreCase("no")){
+                  return true;
+
+                  }
+                  return false; ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="1" dependencies="remoteToCountry" displayName="Remote To State" dynamic="true" name="remoteToState" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[   
+
+
+            import java.util.ArrayList;
+            import java.util.Collections;
+            import java.util.List;
+
+            import org.apache.log4j.Logger;
+
+
+            import sailpoint.api.SailPointContext;
+            import sailpoint.object.Custom;
+            import sailpoint.object.DynamicValue;
+            import sailpoint.object.Field;
+
+            import sailpoint.object.Form;
+            import sailpoint.object.Identity;
+
+            import sailpoint.tools.GeneralException;
+            String country=(String)form.getField("remoteToCountry").getValue();
+            String resState=(String)form.getField("remoteToState").getValue();
+            Custom customStates = context.getObjectByName(Custom.class,"Highmetric-Custom-States");
+            List stateList =new ArrayList();
+            if(null!=customStates && null!=country)
+            {
+            stateList=customStates.getList(country);
+            Collections.sort(stateList);
+
+            if(null!=resState && null!=stateList && sailpoint.tools.Util.nullSafeContains(stateList, resState))
+            {
+            //do nothing
+
+            }
+            else if(null!=stateList && !sailpoint.tools.Util.isEmpty(stateList))
+            {
+            field.setValue(null);
+            DynamicValue dv = new DynamicValue();
+
+            dv.setValue(stateList);
+            field.setAllowedValuesDefinition(dv);
+
+            }
+
+
+
+            }
+
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                  String remoteValue = form.getField("remote").getValue();
+
+                  if (remoteValue != null && remoteValue.equalsIgnoreCase("no")){
+                  return true;
+
+                  }
+                  return false;       
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="1" displayName="Office Location" name="office" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[	  
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+
+            List<String> officeList =null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-OfficeLocation");
+
+            if (custom != null) {
+            officeList = custom.getList("Office Location");
+            } 
+            if(officeList!=null && !(sailpoint.tools.Util.isEmpty(officeList)))
+            {
+            Collections.sort(officeList);
+            return officeList;
+            }     
+            return null; 
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+  </Section>
+  <Section columns="2" label="For Accounting Purpose" name="forAccountingPurpose">
+    <Field columnSpan="1" displayName="Region" displayType="combobox" name="region" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[	  
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+            Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+            logger.setLevel(Level.DEBUG);
+
+            List<String> regionList =null;
+            logger.debug("inside region");
+            Custom customregion = context.getObjectByName(Custom.class,"Highmetric-Custom-AccountingRegion");
+            logger.debug("inside region ->>> customregion list "+customregion);
+            if (customregion != null) {
+            regionList = customregion.getList("Accounting Region");
+
+            } 
+            if(regionList!=null && !(sailpoint.tools.Util.isEmpty(regionList)))
+            {
+            Collections.sort(regionList);
+            return regionList;
+            }
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" displayName="Practice Line" displayType="combobox" name="practiceLine" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Script>
+          <Source><![CDATA[
+            import sailpoint.object.Custom;
+            import java.util.List;
+            import java.util.Collections;
+            import org.apache.log4j.Logger;
+            import org.apache.log4j.Level;
+
+            Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+            logger.setLevel(Level.DEBUG);
+
+            List<String> practiceLineList=null;
+
+            Custom custom = context.getObjectByName(Custom.class,"Highmetric-Custom-PracticeLine");
+
+
+            if (custom != null) {
+            practiceLineList = custom.getList("Practice Line");
+            logger.debug("inside entity-->practiceLineList "+practiceLineList);
+            } 
+            if(practiceLineList!=null && !(sailpoint.tools.Util.isEmpty(practiceLineList)))
+            {
+            logger.debug("inside practiceLineList-->if 2");
+            Collections.sort(practiceLineList);
+            return practiceLineList;
+            }
+            return null;
+          ]]></Source>
+        </Script>
+      </AllowedValuesDefinition>
+    </Field>
+  </Section>
+  <Section label="Additional Information" name="additionalInformation">
+    <Field displayName="Comments" displayType="textarea" name="comments" type="string">
+      <Attributes>
+        <Map>
+          <entry key="height" value="60"/>
+          <entry key="width" value="400"/>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import java.util.regex.Matcher; 
+          import java.util.regex.Pattern;
+          import sailpoint.tools.Message;
+
+          // Expect: java.lang.String value
+
+          Logger logger = Logger.getLogger("Highmetric Contractor Onboarding :");
+          logger.setLevel(Level.DEBUG);
+
+          logger.debug("Additional Information Comments");
+          String addComments = value;         
+          List messages = new ArrayList();
+
+          if(addComments!=null)
+          {
+          Pattern p = Pattern.compile("[a-zA-Z0-9_+&amp;.*\\- ]+");
+          Matcher mat = p.matcher(addComments); 
+          logger.debug("addComments->"+ mat); 
+
+          if (!mat.matches())
+          {
+          Message msg = new Message();
+          msg.setKey("Please do not use any Special Character");
+          messages.add(msg);
+          logger.debug("inside messages");
+          return messages.toString();         
+          }
+          }
+          return null;
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+  </Section>
+  <Button action="cancel" label="nav_cancel"/>
+  <Button action="next" label="Submit"/>
+</Form>

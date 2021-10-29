@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-Json-to-Map">
+  <Source><![CDATA[
+import connector.common.JsonUtil;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
+
+Logger logger = Logger.getLogger("Test-Rule Json to Map");
+logger.setLevel(Level.DEBUG);
+
+String jsonString= "{\"workerStatus\":{\"statusCode\":{\"codeValue\":\"Active\"}},\"businessCommunication\":{\"emails\":[{\"itemID\":\"Business\",\"nameCode\":{\"codeValue\":\"Work E-mail\",\"shortName\":\"Work E-mail\"},\"emailUri\":\"rambatkar@columninfosec.com\"}]}}";
+ 
+Map jsonMap = JsonUtil.toMap(jsonString);
+ 	
+ logger.debug("JASON Map==>"+jsonMap);
+ 
+ return jsonMap;
+ 
+  
+  ]]>
+  
+ </Source>
+</Rule>

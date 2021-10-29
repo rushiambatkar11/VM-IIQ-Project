@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rushi-Rule-Get-ADP-Users">
+  <Description>
+    A rule which will call the workflow for the deletion and getting all the inactive users which will get deleted from AD and Sailpoint.
+  </Description>
+  <Source><![CDATA[
+  import sailpoint.object.Identity;
+  import sailpoint.object.Application;
+  import sailpoint.api.IdentityService;
+  import java.util.ArrayList;
+  import java.util.List;
+  import org.apache.log4j.Logger;
+  import org.apache.log4j.Level;
+
+
+  Logger logger = Logger.getLogger("Test-Rushi-Rule-Delete-Identities");
+  logger.setLevel(Level.DEBUG);
+
+
+  List allIdentities = context.getObjects(Identity.class);
+  List adpUsers = new ArrayList();
+  List adpaaccount = new ArrayList();
+
+  Application adpApp = context.getObjectByName(Application.class,"ADP");
+
+  if(null!=adpApp)
+  {
+    adpaaccount.add(adpApp);
+  }
+
+  IdentityService is = new IdentityService(context);
+
+
+
+  for(Identity idn:allIdentities)
+
+  {
+    if(is.hasAccounts(idn,adpaaccount))
+    {
+      adpUsers.add(idn.getName());
+    }
+
+  }
+
+  return "Application:-"+adpApp.getName()+" Total number of users==>"+adpUsers.size()+"users==>"+adpUsers;
+
+  ]]></Source>
+</Rule>

@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Form name="Highmetric-Form-Employee-Offboarding" type="Workflow">
+  <Section name="My Image Section" type="text">
+    <Field>
+      <Script>
+        <Source><![CDATA[
+          import java.lang.String;
+          import java.lang.StringBuilder;
+          StringBuilder sb = new StringBuilder();
+          sb.append("<style>");
+          sb.append("#table1 {");
+          sb.append("font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;");
+          sb.append("width: 100%; }");
+          sb.append("#stop {");
+          sb.append("width='10%;'");
+          sb.append("padding-top: 2px;");
+          sb.append("padding-bottom: 2px;");
+          sb.append("text-align: center; }");
+          sb.append("</style>");
+          sb.append("<table cellpadding='0' cellspacing='0' width='100%' border='0' align='center' style='margin:0 auto;padding:0;'>");
+          sb.append("<td width='90%'>");
+          sb.append("<p style='margin:0 0 10px;padding-top:20px;color:#649825;font:normal 20pt Arial;line-height:15pt;text-align:left;padding-right:10px;'> Employee Off-boarding Form");
+          sb.append("</p>");
+          sb.append("</td></tr>");
+          sb.append("</table>");
+          return sb.toString(); 
+        ]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section label="Select User" name="selectUser">
+    <Field displayName="Select Employee" dynamic="true" filterString="inactive i== false   &amp;&amp; type i== &quot;employee&quot;" name="selectedidentity" postBack="true" type="sailpoint.object.Identity">
+      <Script>
+        <Source><![CDATA[	  
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee off-boarding selectedidentity");
+          logger.setLevel(Level.DEBUG);
+
+          String identityName = form.getField("selectedidentity").getValue();
+          logger.debug("identityName" + identityName);
+
+          if (identityName != null)
+          {  
+          Identity identity = context.getObject(Identity.class, identityName);
+          if(identity.getName() != null)
+          {
+          return identity.getDisplayName();
+          }
+          }
+
+        ]]></Source>
+      </Script>
+      <ValidationScript>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+          import sailpoint.tools.Message;
+          import java.util.List;
+
+          Logger logger = Logger.getLogger("Employee off-boarding selectedidentity Validation");
+          logger.setLevel(Level.DEBUG);
+
+          List messages = new ArrayList();
+          String identityName = form.getField("selectedidentity").getValue();
+
+          if (identityName == null)
+          {
+          Message msg = new Message();
+          msg.setKey("Please select Employee to offboard");
+          messages.add(msg);
+          return messages;
+          }
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+  </Section>
+  <Section columns="3" label="Oragnization Information" name="User Details">
+    <Attributes>
+      <Map>
+        <entry key="hidden">
+          <value>
+            <Script>
+              <Source><![CDATA[
+                import org.apache.log4j.Logger;
+                import org.apache.log4j.Level;
+
+                Logger logger = Logger.getLogger("Oragnisation Information");
+                logger.setLevel(Level.DEBUG);
+
+                String selectedidentity = form.getField("selectedidentity").getValue();
+
+                logger.debug("selectedidentity ==>"+selectedidentity);
+
+                if (selectedidentity != null) 
+                {		 
+                return false;
+                } 
+                return true;
+              ]]></Source>
+            </Script>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Field columnSpan="1" displayName="User Name" dynamic="true" name="name" postBack="true" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Username");
+          logger.setLevel(Level.DEBUG);
+
+          String selectedUser = form.getField("selectedidentity").getValue();
+
+          logger.debug("Username in this field==>"+selectedUser);
+          if(selectedUser!=null)
+          {
+          Identity identity = context.getObjectById(Identity.class,selectedUser);
+
+          logger.debug("Employee Offboarding Username"+ identity.getName());
+
+          return identity.getName();
+          }  
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="First Name" displayOnly="true" dynamic="true" name="firstname" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding firstname");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();   
+
+          logger.debug("Username in this field==>"+username);
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          logger.debug("Employee Offboarding firstname"+ identity.getFirstname());
+
+          return identity.getFirstname();
+          }    
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Last Name" displayOnly="true" dynamic="true" name="lastname" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding lastname");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          return identity.getLastname();
+          }      
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Report To Manager" displayOnly="true" dynamic="true" name="manager" readOnly="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Manager");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+
+          if(identity.getManager() != null)
+          {
+
+          if(identity.getManager().getDisplayName()!=null)
+          {
+          return identity.getManager().getDisplayName();
+          }
+          else
+          {
+          return identity.getManager().getName();
+          }
+          }         
+          }       
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Entity" displayOnly="true" dynamic="true" name="entity" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Entity");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("entity") != null)
+          {
+
+          return (String)identity.getAttribute("entity");
+          }         
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Entity Email" displayOnly="true" dynamic="true" name="entityEmail" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[   
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Entity Email");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          if(username!=null)
+          {
+
+          Identity identity = context.getObjectByName(Identity.class,username);
+
+          String vemail= identity.getAttribute("entityEmail");
+
+          logger.debug("Entity Email===>"+vemail);
+
+          String email = identity.getEmail();
+
+          logger.debug("email===>"+email);
+
+          if(email!=null)
+          {
+          return email;
+          }
+          else if(vemail!=null)
+          {
+          return vemail;
+          }
+          } 
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="User Type" displayOnly="true" dynamic="true" name="type" required="true" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Type");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("type") != null)
+          {
+
+
+          return  (String)identity.getAttribute("type");
+          }         
+          }
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Start Date" displayOnly="true" dynamic="true" name="startDate" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[ 
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Start Date");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("contractStartDate") != null)
+          {
+
+          return (String) identity.getAttribute("contractStartDate"); 
+          }         
+          }]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Job Title" displayOnly="true" dynamic="true" name="job_title" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[ 
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Form Job Title");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("jobTitle") != null)
+          {
+          logger.debug("Job Title ==>" + identity.getAttribute("jobTitle"));
+          return (String) identity.getAttribute("jobTitle"); 
+          }         
+          }]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Department" displayOnly="true" dynamic="true" name="department" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[ import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Form Department");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("department") != null)
+          {
+          logger.debug("Department " + identity.getAttribute("department"));
+          return (String)identity.getAttribute("department"); 
+          }         
+          }]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="2" displayName="Region" displayOnly="true" dynamic="true" name="region" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[  import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+          import sailpoint.object.Identity;
+
+          Logger logger = Logger.getLogger("Employee Offboarding Form Region");
+          logger.setLevel(Level.DEBUG);
+
+          String username = form.getField("name").getValue();
+
+          logger.debug("Username in this field==>"+username);
+          if(username!=null)
+          {
+          Identity identity = context.getObjectByName(Identity.class,username);
+          if(identity.getAttribute("accountingRegion") != null)
+          {
+          logger.debug("Region==>" + identity.getAttribute("accountingRegion"));
+          return (String)identity.getAttribute("accountingRegion"); 
+          }         
+          }]]></Source>
+      </Script>
+    </Field>
+  </Section>
+  <Section columns="3" label="Off-boarding Details" name="User Details">
+    <Attributes>
+      <Map>
+        <entry key="hidden">
+          <value>
+            <Script>
+              <Source><![CDATA[
+                import org.apache.log4j.Logger;
+                import org.apache.log4j.Level;
+
+                Logger logger = Logger.getLogger("Employee Offboarding Form Oragnisation Information");
+                logger.setLevel(Level.DEBUG);
+
+                String selectedidentity = form.getField("selectedidentity").getValue();
+
+                logger.debug("selectedidentity ==>"+selectedidentity);
+
+                if (selectedidentity != null) 
+                {		 
+                return false;
+                } 
+                return true;
+              ]]></Source>
+            </Script>
+          </value>
+        </entry>
+      </Map>
+    </Attributes>
+    <Field columnSpan="1" displayName="Terminated By" displayOnly="true" dynamic="true" name="terminatedBy" type="string">
+      <Attributes>
+        <Map>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+    </Field>
+    <Field columnSpan="1" displayName="When to Offboard?" name="whenToOffboard" postBack="true" required="true" type="string">
+      <AllowedValuesDefinition>
+        <Value>
+          <List>
+            <String>Terminate Now</String>
+            <String>Terminate End of Day Today</String>
+            <String>Future Termination</String>
+          </List>
+        </Value>
+      </AllowedValuesDefinition>
+    </Field>
+    <Field columnSpan="1" displayName="Termination Date" displayOnly="true" dynamic="true" name="terminationdate" postBack="true" required="true" type="date">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                  String offboardinfuture = form.getField("whenToOffboard").getValue();
+                  if (offboardinfuture != null && (offboardinfuture.equalsIgnoreCase("Terminate Now") || offboardinfuture.equalsIgnoreCase("Terminate End of Day Today"))){
+                  return false;
+                  }
+                  return true;
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+          <entry key="readOnly" value="true"/>
+        </Map>
+      </Attributes>
+      <Script>
+        <Source><![CDATA[
+          import java.util.Date;
+          Date date = new Date();
+          return date;
+        ]]></Source>
+      </Script>
+    </Field>
+    <Field columnSpan="1" displayName="Future Termination Date" dynamic="true" name="futureterminationdate" postBack="true" required="true" type="date">
+      <Attributes>
+        <Map>
+          <entry key="hidden">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                  String offboardinfuture = form.getField("whenToOffboard").getValue();
+                  if (offboardinfuture != null && offboardinfuture.equalsIgnoreCase("Future Termination")){
+                  return false;
+                  }
+                  return true;]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[
+          import sailpoint.tools.Message;  
+          import java.text.DateFormat;
+          import java.text.SimpleDateFormat;
+          import java.util.Calendar;
+          import java.util.Date;
+          import java.lang.Math;
+          import sailpoint.tools.Util;
+
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          // Expect: java.util.Date value
+
+          Logger logger = Logger.getLogger("Employee Offboarding Form Future Termination Date");
+          logger.setLevel(Level.DEBUG);
+
+
+          logger.debug("Termination Date==>"+value);
+          Date terminationDate = form.getField("futureterminationdate").getValue();
+          if (terminationDate != null) 
+          {
+
+          List messages = new ArrayList();
+
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(value);
+          Calendar oyo = Calendar.getInstance();
+          oyo.add(Calendar.MONTH, 3);
+
+
+          if(!(sailpoint.tools.Util.isDateAfterToday(value)))
+          {
+          if ( value.after(oyo.getTime()) ) 
+          {
+          Message msg = new Message();
+          msg.setKey("Please enter below 90 days for contractor extension");
+          messages.add(msg);
+          return messages;
+          }
+          } 
+
+          if((sailpoint.tools.Util.isDateAfterToday(value)))
+          {
+          Message msg = new Message();
+          msg.setKey("Date will be in future");
+          messages.add(msg);
+          return messages;
+          }
+          }       
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+    <Field columnSpan="3" displayName="Comments" displayType="textarea" dynamic="true" name="terminationcomments" type="string">
+      <Attributes>
+        <Map>
+          <entry key="height" value="150"/>
+          <entry key="width" value="200"/>
+        </Map>
+      </Attributes>
+      <ValidationScript>
+        <Source><![CDATA[ 
+          import org.apache.log4j.Logger;
+          import org.apache.log4j.Level;
+
+          import java.util.regex.Matcher; 
+          import java.util.regex.Pattern;
+          import sailpoint.tools.Message;
+
+          // Expect: java.lang.String value
+          Logger logger = Logger.getLogger("Highmetric Employee Onboarding : ");
+          logger.setLevel(Level.DEBUG);
+
+          logger.debug("Additional Information Comments");
+          String addComments = value;         
+          List messages = new ArrayList();
+
+          if(addComments!=null)
+          {
+          Pattern p = Pattern.compile("[a-zA-Z0-9_+&amp;.*\\- ]+");
+          Matcher mat = p.matcher(addComments); 
+
+
+          if (!mat.matches()) 
+          {
+          Message msg = new Message();
+          msg.setKey("Please do not use any Special Character");
+          messages.add(msg);
+          return messages.toString();         
+          }
+          }
+          return null;
+        ]]></Source>
+      </ValidationScript>
+    </Field>
+  </Section>
+  <Button action="cancel" label="nav_cancel"/>
+  <Button action="next" label="Submit"/>
+</Form>

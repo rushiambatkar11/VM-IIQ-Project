@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test-Rule-Rushi-Pagignation">
+  <Source><![CDATA[ 
+  
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import sailpoint.tools.Util;
+import sailpoint.object.Custom;
+
+
+ Logger logger = Logger.getLogger("WebServiceBeforeOperationRule");
+ logger.setLevel(Level.ALL);
+ 
+Custom adpPagignation = context.getObjectByName(Custom.class,"Highmetric-custom-ADP-Pagignation");  
+
+if(null!=adpPagignation)
+{
+// Wrapper class used for Airhemetic calculetion
+Integer top = adpPagignation.get("top");
+Integer skip = adpPagignation.get("skip");
+String url= adpPagignation.get("url");
+
+
+String fullUrl = url+"?$top="+top+"%26$skip="+skip;
+
+if(null !=top && null !=skip)
+{
+Integer skipValue = adpPagignation.get("skip");
+
+Integer updatedskipValue = skipValue +100;
+
+adpPagignation.put("skip",0);
+
+context.saveObject(adpPagignation);
+context.commitTransaction();
+
+return "ccc=>"+fullUrl;
+}
+}
+
+
+  ]]></Source>
+</Rule>
